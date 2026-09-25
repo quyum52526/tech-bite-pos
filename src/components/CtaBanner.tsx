@@ -1,4 +1,4 @@
-import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { site } from "@/lib/site";
 
 export default function CtaBanner() {
@@ -24,17 +24,28 @@ export default function CtaBanner() {
               </div>
             </div>
             <ul className="space-y-4 text-sm">
-              <li className="flex items-center gap-3 text-slate-300">
-                <Mail className="h-5 w-5 text-brand-300" />
-                <a href={`mailto:${site.contactEmail}`} className="hover:text-white">
-                  {site.contactEmail}
+              <li>
+                <a href={`tel:${site.contactPhone}`} className="flex items-center gap-3 text-slate-300 hover:text-white">
+                  <Phone className="h-5 w-5 shrink-0 text-brand-300" /> {site.contactPhoneDisplay}
                 </a>
               </li>
-              <li className="flex items-center gap-3 text-slate-300">
-                <Phone className="h-5 w-5 text-brand-300" /> {site.contactPhone}
+              <li>
+                <a
+                  href={site.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-slate-300 hover:text-white"
+                >
+                  <MessageCircle className="h-5 w-5 shrink-0 text-brand-300" /> WhatsApp {site.contactPhoneDisplay}
+                </a>
               </li>
-              <li className="flex items-center gap-3 text-slate-300">
-                <MapPin className="h-5 w-5 text-brand-300" /> {site.location}
+              <li>
+                <a href={`mailto:${site.contactEmail}`} className="flex items-center gap-3 break-all text-slate-300 hover:text-white">
+                  <Mail className="h-5 w-5 shrink-0 text-brand-300" /> {site.contactEmail}
+                </a>
+              </li>
+              <li className="flex items-start gap-3 text-slate-300">
+                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand-300" /> {site.address}
               </li>
             </ul>
           </div>

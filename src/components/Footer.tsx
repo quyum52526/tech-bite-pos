@@ -12,10 +12,11 @@ const columns = [
     ],
   },
   {
-    title: "Company",
+    title: "Contact",
     links: [
-      { label: "Contact", href: "#contact" },
-      { label: "Book a demo", href: `mailto:${site.contactEmail}` },
+      { label: site.contactPhoneDisplay, href: `tel:${site.contactPhone}` },
+      { label: "WhatsApp", href: site.whatsappUrl },
+      { label: site.contactEmail, href: `mailto:${site.contactEmail}` },
     ],
   },
 ];
@@ -30,6 +31,7 @@ export default function Footer() {
             <p className="mt-4 max-w-xs text-sm text-slate-400">
               Multi-tenant POS, inventory and double-entry accounting for modern retail.
             </p>
+            <p className="mt-4 max-w-xs text-sm text-slate-500">{site.address}</p>
           </div>
           <div>
             <p className="text-sm font-semibold text-white">Features</p>
@@ -49,7 +51,11 @@ export default function Footer() {
               <ul className="mt-4 space-y-2 text-sm">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <a href={l.href} className="text-slate-400 hover:text-white">
+                    <a
+                      href={l.href}
+                      {...(l.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="break-all text-slate-400 hover:text-white"
+                    >
                       {l.label}
                     </a>
                   </li>
@@ -60,7 +66,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row">
           <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <p>{site.location}</p>
+          <p>{site.city}</p>
         </div>
       </div>
     </footer>

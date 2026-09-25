@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
-import { plans } from "@/lib/site";
+import { plans, YEARLY_MONTHS_BILLED } from "@/lib/site";
 
 export default function Pricing() {
   const [yearly, setYearly] = useState(false);
@@ -33,7 +33,9 @@ export default function Pricing() {
                 )}
                 <span className="relative">
                   {o.label}
-                  {o.value && <span className="ml-1.5 text-xs text-brand-200">2 months free</span>}
+                  {o.value && (
+                    <span className="ml-1.5 text-xs text-brand-200">{12 - YEARLY_MONTHS_BILLED} months free</span>
+                  )}
                 </span>
               </button>
             ))}
@@ -42,7 +44,7 @@ export default function Pricing() {
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {plans.map((plan) => {
-            const price = yearly ? plan.yearly : plan.monthly;
+            const price = yearly ? plan.monthly * YEARLY_MONTHS_BILLED : plan.monthly;
             return (
               <div
                 key={plan.name}
@@ -60,14 +62,8 @@ export default function Pricing() {
                 <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
                 <p className="mt-2 text-sm text-slate-400">{plan.description}</p>
                 <div className="mt-6 flex items-baseline gap-1">
-                  {price === null ? (
-                    <span className="text-4xl font-bold text-white">Custom</span>
-                  ) : (
-                    <>
-                      <span className="text-4xl font-bold text-white">৳{price.toLocaleString("en-IN")}</span>
-                      <span className="text-sm text-slate-400">/{yearly ? "year" : "month"}</span>
-                    </>
-                  )}
+                  <span className="text-4xl font-bold text-white">৳{price.toLocaleString("en-IN")}</span>
+                  <span className="text-sm text-slate-400">/{yearly ? "year" : "month"}</span>
                 </div>
                 <a href="#contact" className={`${plan.highlight ? "btn-primary" : "btn-ghost"} mt-6`}>
                   {plan.cta}

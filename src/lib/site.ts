@@ -1,17 +1,21 @@
 // Business details shown on the landing page.
-// PLACEHOLDERS — confirm contact details and pricing before going live.
 export const site = {
   name: "Tech BitePOS",
-  contactEmail: "hello@techbitepos.com",
-  contactPhone: "+880 1XXX-XXXXXX",
-  location: "Chattogram, Bangladesh",
+  contactEmail: "quyum52526@gmail.com",
+  contactPhone: "+8801962434901",
+  contactPhoneDisplay: "+880 1962-434901",
+  whatsappUrl: "https://wa.me/8801962434901",
+  address: "Ruby Gate, East Nasirabad, Baizid, Chittagong, Bangladesh",
+  city: "Chittagong, Bangladesh",
 };
+
+// Yearly billing = 10 × monthly (2 months free).
+export const YEARLY_MONTHS_BILLED = 10;
 
 export type Plan = {
   name: string;
   description: string;
-  monthly: number | null;
-  yearly: number | null;
+  monthly: number;
   highlight?: boolean;
   cta: string;
   features: string[];
@@ -22,7 +26,6 @@ export const plans: Plan[] = [
     name: "Starter",
     description: "A single shop that wants a proper POS with real books.",
     monthly: 1500,
-    yearly: 15000,
     cta: "Start free trial",
     features: [
       "1 branch · 2 tills",
@@ -36,8 +39,7 @@ export const plans: Plan[] = [
   {
     name: "Growth",
     description: "Growing retailers with several branches and a team to manage.",
-    monthly: 4500,
-    yearly: 45000,
+    monthly: 3000,
     highlight: true,
     cta: "Start free trial",
     features: [
@@ -53,8 +55,7 @@ export const plans: Plan[] = [
   {
     name: "Enterprise",
     description: "Chains and distributors that need custom workflows and SLAs.",
-    monthly: null,
-    yearly: null,
+    monthly: 5000,
     cta: "Talk to sales",
     features: [
       "Unlimited branches & tenants",

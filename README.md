@@ -16,10 +16,9 @@ npm run build   # production build
 
 ```
 src/
-  app/            layout, page, global styles, favicon
+  app/            layout, page, global styles, icon.svg (favicon)
   components/     Navbar, Hero, PosMockup, Features, PosDemo, UseCases, Pricing, CtaBanner, Footer
   lib/features.ts feature categories (icon, title, description) — edit copy here
-  lib/site.ts     contact details and pricing plans — edit before launch
+  lib/site.ts     contact details and pricing plans (yearly = 10 × monthly)
+public/logo.svg   brand mark used in the navbar and footer
 ```
-
-> Contact details and plan prices in `src/lib/site.ts` are placeholders. Confirm them before going live.
