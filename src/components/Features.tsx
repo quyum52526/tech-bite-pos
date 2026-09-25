@@ -54,15 +54,19 @@ export default function Features() {
 
         {/* Desktop tabs */}
         <div className="mt-14 hidden md:block">
-          <div role="tablist" className="mx-auto flex max-w-5xl flex-wrap justify-center gap-2 rounded-2xl border border-white/5 bg-white/[0.02] p-1.5">
+          {/* 7 modules: a grid instead of a single row, so long labels (and Bangla) wrap inside their cell */}
+          <div
+            role="tablist"
+            className="grid grid-cols-4 gap-1.5 rounded-2xl border border-white/5 bg-white/[0.02] p-1.5 lg:grid-cols-7"
+          >
             {featureCategories.map((c) => (
               <button
                 key={c.id}
                 role="tab"
                 aria-selected={active === c.id}
                 onClick={() => setActive(c.id)}
-                className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
-                  active === c.id ? "text-white" : "text-slate-400 hover:text-slate-200"
+                className={`relative flex min-h-[5.5rem] flex-col items-center justify-center gap-2 rounded-xl px-2 py-3 text-center text-[13px] font-medium leading-snug transition ${
+                  active === c.id ? "text-white" : "text-slate-400 hover:bg-white/[0.03] hover:text-slate-200"
                 }`}
               >
                 {active === c.id && (
@@ -72,7 +76,7 @@ export default function Features() {
                     transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                   />
                 )}
-                <c.icon className="relative h-4 w-4" />
+                <c.icon className={`relative h-5 w-5 ${active === c.id ? "text-brand-300" : ""}`} />
                 <span className="relative">{t.features.categories[c.id].label}</span>
               </button>
             ))}

@@ -68,13 +68,15 @@ export const en = {
     eyebrow: "Features",
     title: "One platform. Every counter, shelf and ledger.",
     subtitle:
-      "Point of sale, deep inventory, accounting, CRM and branch security in one system that shares a single source of truth.",
+      "Point of sale, inventory, accounting, reports, online orders, CRM and branch security in one system that shares a single source of truth.",
     categories: {
       sales: { label: "Sales & POS", tagline: "A checkout built for rush hour, not demos." },
       inventory: { label: "Inventory & Production", tagline: "Know exactly what you hold, where, and until when." },
       accounting: { label: "Accounting & Ledgers", tagline: "Every sale is a journal entry. Automatically." },
       crm: { label: "CRM & Promotions", tagline: "Turn one-time buyers into regulars." },
       security: { label: "Multi-Branch & Security", tagline: "Run ten branches like you're standing in each one." },
+      reports: { label: "Reports & Analytics", tagline: "Close the books daily, not just at year-end." },
+      omnichannel: { label: "Omnichannel & Customer Growth", tagline: "Sell beyond the counter and collect every taka owed." },
     },
     items: {
       barcode: {
@@ -201,6 +203,56 @@ export const en = {
         title: "Audit Trail",
         description:
           "Every create, edit, delete and void is logged with the user, time, branch and before-and-after values. Nothing disappears, so disputes are settled with facts.",
+      },
+      dayBook: {
+        title: "Day Book",
+        description:
+          "A chronological, real-time ledger of every cash, bank and MFS movement throughout the day. Filter by branch, user or account to trace any transaction back to its voucher in seconds.",
+      },
+      trialBalance: {
+        title: "Trial Balance",
+        description:
+          "Live verification that total debits equal total credits across every ledger. Because entries post as they happen, there is no manual reconciliation delay before you can trust the numbers.",
+      },
+      cashMovement: {
+        title: "Cash Movement Ledger",
+        description:
+          "A detailed audit of vault transfers, safe drops and drawer float adjustments. Every taka of physical cash is accounted for between the till, the safe and the bank.",
+      },
+      yearEnd: {
+        title: "Year-End Closing",
+        description:
+          "Roll over to the new financial year automatically, closing income and expense ledgers into retained earnings. Opening balances carry forward and the closed year is locked against changes.",
+      },
+      inventoryBi: {
+        title: "Inventory BI Analytics",
+        description:
+          "See your top-selling SKUs, stock turn ratios and gross profit margins by product, category and branch. Spot slow movers and dead stock before they tie up your working capital.",
+      },
+      socialOrders: {
+        title: "Social Online Orders",
+        description:
+          "Log orders that arrive through Facebook, WhatsApp or a phone call in the same system as your counter sales. Each order gets a courier consignment with automated tracking until it is delivered.",
+      },
+      codSettlement: {
+        title: "COD Settlement",
+        description:
+          "A dedicated ledger for Cash-on-Delivery money held by your couriers. Track what each courier has remitted, what is still pending and the charges deducted on every settlement.",
+      },
+      smsCampaigns: {
+        title: "Targeted SMS Campaigns",
+        description:
+          "Broadcast custom SMS promotions to segmented customer groups straight from the platform. Pick an audience, write the message and send, without exporting lists to another tool.",
+      },
+      dueRecovery: {
+        title: "Customer Balance & Due Recovery",
+        description:
+          "Keep a running receivable balance for every credit customer, updated with each sale and payment. Send a payment reminder in one click and record collections against the right invoice.",
+      },
+      rfmInsights: {
+        title: "RFM Audience Insights",
+        description:
+          "Customers are grouped automatically into Champions, At-Risk and Dormant buyers based on how they actually shop. Use these audiences to target SMS campaigns and win back customers before they are lost.",
       },
     },
   },

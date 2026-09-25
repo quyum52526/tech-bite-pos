@@ -30,6 +30,18 @@ import {
   Calculator,
   HeartHandshake,
   Building2,
+  BarChart3,
+  TrendingUp,
+  BookText,
+  Scale,
+  ArrowLeftRight,
+  CalendarCheck,
+  LineChart,
+  ShoppingBag,
+  HandCoins,
+  Megaphone,
+  BellRing,
+  UsersRound,
 } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/en";
 
@@ -97,6 +109,28 @@ export const featureCategories: FeatureCategory[] = [
       { key: "commissions", icon: BadgePercent },
       { key: "roles", icon: ShieldCheck },
       { key: "audit", icon: History },
+    ],
+  },
+  {
+    id: "reports",
+    icon: BarChart3,
+    features: [
+      { key: "dayBook", icon: BookText },
+      { key: "trialBalance", icon: Scale },
+      { key: "cashMovement", icon: ArrowLeftRight },
+      { key: "yearEnd", icon: CalendarCheck },
+      { key: "inventoryBi", icon: LineChart },
+    ],
+  },
+  {
+    id: "omnichannel",
+    icon: TrendingUp,
+    features: [
+      { key: "socialOrders", icon: ShoppingBag },
+      { key: "codSettlement", icon: HandCoins },
+      { key: "smsCampaigns", icon: Megaphone },
+      { key: "dueRecovery", icon: BellRing },
+      { key: "rfmInsights", icon: UsersRound },
     ],
   },
 ];
