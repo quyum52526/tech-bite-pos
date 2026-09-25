@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Hind_Siliguri, Inter, JetBrains_Mono } from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n";
+import { en } from "@/lib/i18n/en";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const bangla = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-bn",
+});
 
 export const metadata: Metadata = {
-  title: "Tech BitePOS — Enterprise POS & Double-Entry Accounting",
-  description:
-    "Multi-tenant POS, inventory and double-entry accounting for modern retail. Multi-branch control, offline mode and real-time ledger sync.",
+  title: en.meta.title,
+  description: en.meta.description,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable} ${mono.variable} ${bangla.variable}`}>
+      <body>
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

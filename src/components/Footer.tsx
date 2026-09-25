@@ -1,27 +1,32 @@
+"use client";
+
 import Logo from "./Logo";
 import { featureCategories } from "@/lib/features";
+import { useI18n } from "@/lib/i18n";
 import { site } from "@/lib/site";
 
-const columns = [
-  {
-    title: "Product",
-    links: [
-      { label: "Interactive Demo", href: "#demo" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Use Cases", href: "#use-cases" },
-    ],
-  },
-  {
-    title: "Contact",
-    links: [
-      { label: site.contactPhoneDisplay, href: `tel:${site.contactPhone}` },
-      { label: "WhatsApp", href: site.whatsappUrl },
-      { label: site.contactEmail, href: `mailto:${site.contactEmail}` },
-    ],
-  },
-];
-
 export default function Footer() {
+  const { t, lang, num } = useI18n();
+  const f = t.footer;
+  const columns = [
+    {
+      title: f.product,
+      links: [
+        { label: f.interactiveDemo, href: "#demo" },
+        { label: t.nav.pricing, href: "#pricing" },
+        { label: t.nav.useCases, href: "#use-cases" },
+      ],
+    },
+    {
+      title: f.contact,
+      links: [
+        { label: site.contactPhoneDisplay, href: `tel:${site.contactPhone}` },
+        { label: t.contact.whatsapp, href: site.whatsappUrl },
+        { label: site.contactEmail, href: `mailto:${site.contactEmail}` },
+      ],
+    },
+  ];
+
   return (
     <footer className="border-t border-white/5 py-14">
       <div className="container-x">
@@ -29,17 +34,17 @@ export default function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm text-slate-400">
-              Multi-tenant POS, inventory and double-entry accounting for modern retail.
+              {f.tagline}
             </p>
-            <p className="mt-4 max-w-xs text-sm text-slate-500">{site.address}</p>
+            <p className="mt-4 max-w-xs text-sm text-slate-500">{lang === "bn" ? site.addressBn : site.address}</p>
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">Features</p>
+            <p className="text-sm font-semibold text-white">{f.features}</p>
             <ul className="mt-4 space-y-2 text-sm">
               {featureCategories.map((c) => (
                 <li key={c.id}>
                   <a href="#features" className="text-slate-400 hover:text-white">
-                    {c.label}
+                    {t.features.categories[c.id].label}
                   </a>
                 </li>
               ))}
@@ -65,8 +70,10 @@ export default function Footer() {
           ))}
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row">
-          <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <p>{site.city}</p>
+          <p>
+            © {num(new Date().getFullYear()).replace(/[,،]/g, "")} {site.name}. {f.rights}
+          </p>
+          <p>{lang === "bn" ? site.cityBn : site.city}</p>
         </div>
       </div>
     </footer>

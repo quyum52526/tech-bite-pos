@@ -24,8 +24,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        sans: ["var(--font-inter)", "var(--font-bn)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "var(--font-bn)", "ui-monospace", "monospace"],
       },
       backgroundImage: {
         grid: "linear-gradient(to right, rgba(148,163,184,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.08) 1px, transparent 1px)",

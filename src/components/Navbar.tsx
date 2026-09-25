@@ -4,18 +4,22 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, Play, X } from "lucide-react";
 import Logo from "./Logo";
+import LanguageSwitcher from "./LanguageSwitcher";
+import RegisterButton from "./RegisterButton";
 import { featureCategories } from "@/lib/features";
-
-const links = [
-  { href: "#demo", label: "Demo" },
-  { href: "#use-cases", label: "Use Cases" },
-  { href: "#pricing", label: "Pricing" },
-];
+import { useI18n } from "@/lib/i18n";
 
 export default function Navbar() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [featuresOpen, setFeaturesOpen] = useState(false);
+
+  const links = [
+    { href: "#demo", label: t.nav.demo },
+    { href: "#use-cases", label: t.nav.useCases },
+    { href: "#pricing", label: t.nav.pricing },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -36,7 +40,7 @@ export default function Navbar() {
         scrolled ? "border-b border-white/5 bg-ink-900/80 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
-      <nav className="container-x flex h-16 items-center justify-between">
+      <nav className="container-x flex h-16 items-center justify-between gap-4">
         <Logo />
 
         <div className="hidden items-center gap-1 lg:flex">
@@ -50,7 +54,7 @@ export default function Navbar() {
               aria-expanded={featuresOpen}
               onClick={() => setFeaturesOpen((v) => !v)}
             >
-              Features <ChevronDown className={`h-4 w-4 transition ${featuresOpen ? "rotate-180" : ""}`} />
+              {t.nav.features} <ChevronDown className={`h-4 w-4 transition ${featuresOpen ? "rotate-180" : ""}`} />
             </button>
             <AnimatePresence>
               {featuresOpen && (
@@ -73,8 +77,10 @@ export default function Navbar() {
                           <c.icon className="h-5 w-5" />
                         </span>
                         <span>
-                          <span className="block text-sm font-semibold text-white">{c.label}</span>
-                          <span className="block text-xs text-slate-400">{c.tagline}</span>
+                          <span className="block text-sm font-semibold text-white">
+                            {t.features.categories[c.id].label}
+                          </span>
+                          <span className="block text-xs text-slate-400">{t.features.categories[c.id].tagline}</span>
                         </span>
                       </a>
                     ))}
@@ -84,28 +90,43 @@ export default function Navbar() {
             </AnimatePresence>
           </div>
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:text-white">
+            <a
+              key={l.href}
+              href={l.href}
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:text-white"
+            >
               {l.label}
             </a>
           ))}
+          <a
+            href="#contact"
+            className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:text-white xl:hidden"
+          >
+            {t.nav.contact}
+          </a>
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <a href="#contact" className="btn-ghost py-2">
-            Contact
+          <LanguageSwitcher />
+          <a href="#contact" className="btn-ghost hidden whitespace-nowrap py-2 xl:inline-flex">
+            {t.nav.contact}
           </a>
-          <a href="#demo" className="btn-primary py-2">
-            <Play className="h-4 w-4" /> Live Demo
+          <a href="#demo" className="btn-ghost hidden whitespace-nowrap py-2 xl:inline-flex">
+            <Play className="h-4 w-4" /> {t.nav.liveDemo}
           </a>
+          <RegisterButton />
         </div>
 
-        <button
-          className="rounded-lg p-2 text-slate-300 lg:hidden"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-        >
-          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher />
+          <button
+            className="rounded-lg p-2 text-slate-300"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label={mobileOpen ? t.nav.closeMenu : t.nav.openMenu}
+          >
+            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </nav>
 
       <AnimatePresence>
@@ -117,7 +138,10 @@ export default function Navbar() {
             className="overflow-hidden border-b border-white/5 bg-ink-900/95 backdrop-blur-xl lg:hidden"
           >
             <div className="container-x space-y-1 py-4">
-              <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Features</p>
+              <RegisterButton className="mb-4 w-full" onClick={() => setMobileOpen(false)} />
+              <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                {t.nav.features}
+              </p>
               {featureCategories.map((c) => (
                 <a
                   key={c.id}
@@ -125,7 +149,7 @@ export default function Navbar() {
                   onClick={() => jumpToCategory(c.id)}
                   className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
                 >
-                  <c.icon className="h-4 w-4 text-brand-400" /> {c.label}
+                  <c.icon className="h-4 w-4 text-brand-400" /> {t.features.categories[c.id].label}
                 </a>
               ))}
               <div className="my-2 h-px bg-white/5" />
@@ -141,10 +165,10 @@ export default function Navbar() {
               ))}
               <div className="grid grid-cols-2 gap-2 pt-3">
                 <a href="#contact" onClick={() => setMobileOpen(false)} className="btn-ghost">
-                  Contact
+                  {t.nav.contact}
                 </a>
-                <a href="#demo" onClick={() => setMobileOpen(false)} className="btn-primary">
-                  Live Demo
+                <a href="#demo" onClick={() => setMobileOpen(false)} className="btn-ghost">
+                  <Play className="h-4 w-4" /> {t.nav.liveDemo}
                 </a>
               </div>
             </div>
