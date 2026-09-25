@@ -68,191 +68,238 @@ export const en = {
     eyebrow: "Features",
     title: "One platform. Every counter, shelf and ledger.",
     subtitle:
-      "Point of sale, inventory, accounting, reports, online orders, CRM and branch security in one system that shares a single source of truth.",
+      "Point of sale, inventory, accounting, reports, online orders, CRM, HR and branch security in one system that shares a single source of truth.",
     categories: {
       sales: { label: "Sales & POS", tagline: "A checkout built for rush hour, not demos." },
       inventory: { label: "Inventory & Production", tagline: "Know exactly what you hold, where, and until when." },
       accounting: { label: "Accounting & Ledgers", tagline: "Every sale is a journal entry. Automatically." },
       crm: { label: "CRM & Promotions", tagline: "Turn one-time buyers into regulars." },
-      security: { label: "Multi-Branch & Security", tagline: "Run ten branches like you're standing in each one." },
+      security: { label: "Multi-Branch, HR & Security", tagline: "Your people, payroll and permissions in one place." },
       reports: { label: "Reports & Analytics", tagline: "Close the books daily, not just at year-end." },
       omnichannel: { label: "Omnichannel & Customer Growth", tagline: "Sell beyond the counter and collect every taka owed." },
     },
     items: {
+      // ---- Sales & POS
       barcode: {
-        title: "Barcode Scanning",
+        title: "Barcode Scanning & Labels",
         description:
-          "Scan any EAN, UPC or in-house label and the item lands in the cart instantly with its live price and stock. Weighted-item barcodes are decoded automatically so produce and meat sell at the correct amount.",
+          "Scan any EAN, UPC or in-house barcode and the item lands in the cart with its live price and stock. Products without a barcode get one generated, and labels print straight from the inventory screen.",
       },
       shifts: {
         title: "Cash Drawer Shifts",
         description:
-          "Each cashier opens a shift with a counted float and closes it with a blind count. The system reconciles expected versus actual cash and flags every over or short.",
+          "Each cashier opens a shift with a float and closes it by counting the drawer. Expected cash is calculated from sales, refunds, pay-outs and safe drops, and any over or short is posted to the ledger automatically.",
       },
       safeDrops: {
-        title: "Safe Drops",
+        title: "Safe Drops, Pay-Ins & Pay-Outs",
         description:
-          "When the drawer crosses a limit you set, the cashier is prompted to drop excess cash into the safe. Every drop is logged with time, amount and user, so the drawer never holds more than it should.",
+          "Move excess cash from the drawer to the safe mid-shift, or record cash paid in and out, each with a reason and the user who did it. Safe drops come off the drawer's expected cash without being counted as an expense.",
       },
       boxPiece: {
-        title: "Box ⇄ Piece Toggle",
+        title: "Box ⇄ Piece & Multi-Unit Selling",
         description:
-          "Sell a full carton or a single piece from the same product with one tap. Stock is tracked in the base unit, so conversions between box and piece never drift.",
+          "Sell the same product by the piece, pack, box, dozen or weight, each with its own conversion. Stock is kept in the base unit, so conversions between units never drift.",
       },
       layaways: {
         title: "Layaways",
         description:
-          "Reserve goods against a deposit and collect the balance in instalments. Reserved stock is held back from sale until the layaway is completed or cancelled.",
+          "Book goods against a deposit and collect the rest in instalments, tracked from Booked to Partially Paid, Fully Paid and Fulfilled. Cancelled layaways refund through the normal refund methods.",
       },
       quotations: {
         title: "Quotations",
         description:
-          "Build a priced quote at the counter and send it to the customer as a PDF. When they accept, convert it to an invoice in one click without re-entering a single line.",
+          "Build a priced quote with a validity date at the counter and print it for the customer. When they accept, convert it to a sale without re-entering a single line.",
       },
       receipts: {
-        title: "Digital SMS / WhatsApp Receipts",
+        title: "Digital & Printed Receipts",
         description:
-          "Send the receipt to the customer's phone by SMS or WhatsApp instead of printing. It saves paper and captures a contact number for your CRM on every sale.",
+          "Send the receipt to the customer's phone by SMS or WhatsApp, or print it on a thermal or A4 printer. Every digital receipt is logged with its delivery status.",
       },
+      returns: {
+        title: "Returns, Exchanges & Store Credit",
+        description:
+          "Take a return against the original invoice and refund by cash, bKash, Nagad, store credit, due adjustment or exchange. Returned stock and the refund post to inventory and the ledger in the same step.",
+      },
+      // ---- Inventory & Production
       fefo: {
         title: "Batch & Expiry Tracking (FEFO)",
         description:
-          "Every receipt is recorded with its batch number and expiry date. The POS picks the batch that expires first, and alerts warn you before stock goes out of date.",
+          "Every receipt is recorded with its batch number, expiry date and cost. The POS sells the batch that expires first, so older stock leaves the shelf before it goes out of date.",
       },
       serial: {
         title: "Serial / IMEI Tracking",
         description:
-          "Capture a serial or IMEI for each unit at purchase and again at sale. Warranty claims and returns trace back to the exact invoice in seconds.",
+          "Capture a serial or IMEI for each unit and follow it through In Stock, Sold, Transferred, Damaged or Returned to Vendor. Any unit can be traced to the invoice it was sold on.",
       },
       transfers: {
-        title: "Inter-Branch Transfers with GRN",
+        title: "Stock Requests & Transfers with GRN",
         description:
-          "Dispatch stock from one branch and hold it in transit until the receiving branch confirms a Goods Received Note. Shortages found on receipt are recorded against the transfer, not lost.",
+          "Branches request stock with a priority, or the warehouse pushes it, and transfers go through approval. The receiving branch confirms a Goods Received Note that records good, damaged, short and over quantities with the loss value.",
       },
       audits: {
         title: "Physical Stock Audits",
         description:
-          "Run full or cycle counts with a scanner while the store stays open. Variances are posted as adjustments with an approval step and a full audit trail.",
+          "Count the whole store, one category or one brand. Variances are costed and posted as adjustments only after a manager approves the audit.",
       },
       bom: {
-        title: "BOM Repackaging",
+        title: "Production & Repackaging",
         description:
-          "Define a bill of materials to break bulk stock into retail packs or combine items into bundles. Raw material is consumed and finished goods are produced at the correct cost.",
+          "Turn bulk stock into retail packs or combine items into bundles with a production batch. Inputs, outputs, packaging cost and wastage are all costed, so finished goods carry their true cost.",
       },
+      purchasing: {
+        title: "Purchase Orders & Vendor Returns",
+        description:
+          "Raise purchase orders, receive them into purchase invoices and pay vendors in cash, by bank or on credit. Return faulty goods for a refund or an exchange, with the vendor ledger updated every time.",
+      },
+      // ---- Accounting & Ledgers
       journals: {
         title: "Automated Double-Entry Journals",
         description:
-          "Sales, purchases, returns and payments post balanced debit and credit entries the moment they happen. Your trial balance is always current, with no month-end re-keying.",
+          "Sales, purchases, returns, payments, payroll and stock movements post balanced debit and credit entries to your chart of accounts the moment they happen. There is no month-end re-keying.",
       },
       landed: {
         title: "Landed Costs",
         description:
-          "Spread freight, duty, LC charges and clearing costs across the items on an import. Product cost reflects the true landed cost, so your margins are real.",
+          "Add freight, customs duty, handling and insurance to a purchase and spread them by value, quantity, weight or volume. Product cost reflects the true landed cost, so your margins are real.",
       },
       mfs: {
         title: "MFS Payment Ledgers (bKash / Nagad / Rocket)",
         description:
-          "Each mobile wallet gets its own ledger, with transaction IDs captured at the counter. Reconcile against your merchant statement line by line, including MFS charges.",
+          "Each mobile wallet maps to its own ledger account, and the transaction reference is captured at the counter. Reconcile each wallet against your merchant statement line by line.",
       },
       zreport: {
         title: "Daily Closing Z-Reports",
         description:
-          "Close the day with a Z-report that breaks down sales, returns, discounts, tax and every payment method. Once closed, the day is locked against back-dated edits.",
+          "Close the day with a report that breaks down sales, returns, discounts, VAT and every payment method. Each shift's counted cash and over/short is shown alongside.",
       },
       vouchers: {
-        title: "Expense Vouchers",
+        title: "Vouchers & Expenses",
         description:
-          "Record petty cash and branch expenses against the right expense head with a receipt photo attached. Vouchers post to the ledger and appear on the branch P&L immediately.",
+          "Record payment, receipt and journal vouchers, and branch expenses against the right expense head. Mistakes are voided with a reason rather than deleted, so the trail stays intact.",
       },
-      rfm: {
-        title: "RFM Customer Segmentation",
+      accountTransfers: {
+        title: "Cash, Bank & Wallet Transfers",
         description:
-          "Customers are scored on recency, frequency and monetary value from real purchase history. Target champions, win back those at risk, and stop discounting people who would buy anyway.",
+          "Move money between cash in hand, the branch vault, bank accounts and MFS wallets with a proper journal entry. Every account's balance stays correct without manual adjustments.",
       },
+      // ---- CRM & Promotions
       loyalty: {
         title: "4-Tier Loyalty Ladder",
         description:
-          "Customers climb from Bronze to Silver, Gold and Platinum as they spend. Each tier earns points faster and unlocks its own perks at checkout.",
+          "Customers move from Standard to Silver, Gold and Platinum as they spend. Each tier sets its own earn multiplier, redemption limit, point expiry and birthday bonus.",
       },
       coupons: {
         title: "Birthday & Anniversary Coupons",
         description:
-          "A personal coupon is issued automatically ahead of each customer's birthday or anniversary. It is delivered by SMS or WhatsApp and redeems at any branch.",
+          "A personal coupon code is issued automatically before each customer's birthday or anniversary, with the discount and validity you set. Each coupon can be claimed once and is linked to the invoice it was used on.",
+      },
+      tieredPromos: {
+        title: "Tiered Volume & Bundle Promos",
+        description:
+          "Price by quantity, such as a lower unit price from 6 pieces up, or sell a fixed bundle of products at a combo price. Choose whether offers stack as the best deal, by priority or exclusively.",
       },
       bxgy: {
-        title: "Buy-X-Get-Y Promo Rules",
+        title: "Buy-X-Get-Y, Happy Hour & Cart Offers",
         description:
-          "Build promotions like buy 2 get 1 free, or buy a phone and get a cover at half price. Rules apply at the till automatically, with start dates, end dates and branch limits.",
+          "Run buy 2 get 1 free, time-of-day happy hours and spend-over-a-threshold discounts, limited by dates and days of the week. Rules apply at the till automatically.",
+      },
+      // ---- Multi-Branch, HR & Security
+      staffDirectory: {
+        title: "Staff Directory & Designations",
+        description:
+          "Keep every employee's designation, branch, contact details and salary type in one directory. Link an employee to their user login so their sales, shifts and attendance connect.",
       },
       attendance: {
-        title: "Branch Attendance & Payroll",
+        title: "Attendance & Shift Logs",
         description:
-          "Staff clock in at their branch terminal and hours flow straight into payroll. Salaries, advances and deductions post to the ledger when payroll is approved.",
+          "Record daily check-in and check-out and mark each day Present, Late, Half-Day or Absent. Half-days and absences flow into payroll, and each cashier's shift is reconciled at close.",
+      },
+      payroll: {
+        title: "Payroll & Pay Slips",
+        description:
+          "Process monthly salaries with bonuses and deductions, and print a pay slip for each employee. When payroll is paid, the salary expense posts straight to the ledger.",
       },
       commissions: {
-        title: "Sales Commissions",
+        title: "Tiered Commission Rules",
         description:
-          "Set commission rules by staff, product or category. Every sale is attributed to a salesperson and commission is calculated automatically for payroll.",
+          "Give each salesperson a base percentage plus higher tiers once sales pass set thresholds, with overrides by category. Commission is calculated from the sales tagged to each salesperson.",
       },
       roles: {
-        title: "Role Permissions",
+        title: "Role Permissions & Account Security",
         description:
-          "Decide exactly who can give discounts, void bills, edit prices or see cost. Sensitive actions can require a manager PIN at the counter.",
+          "Decide which roles can override discounts, void sales or purchases, approve transfers or see cost prices. Accounts lock after five failed sign-in attempts, and password changes are logged.",
       },
-      audit: {
-        title: "Audit Trail",
+      // ---- Reports & Analytics
+      pnl: {
+        title: "Real-Time P&L & Financial Statements",
         description:
-          "Every create, edit, delete and void is logged with the user, time, branch and before-and-after values. Nothing disappears, so disputes are settled with facts.",
+          "Net sales, COGS, operating expenses, gross and net margin, and the balance sheet are calculated straight from posted journals. A VAT summary shows tax collected and your net VAT liability.",
+      },
+      payablesReceivables: {
+        title: "Payables & Receivables Aging",
+        description:
+          "See what you owe each vendor and what each customer owes you, bucketed by how overdue it is. Chase the oldest balances first on both sides.",
+      },
+      cashierPerformance: {
+        title: "Sales & Cashier Performance",
+        description:
+          "Break revenue down by branch, cashier and salesperson for any period. Each cashier's shift over/short sits next to their sales, so discrepancies stand out.",
       },
       dayBook: {
         title: "Day Book",
         description:
-          "A chronological, real-time ledger of every cash, bank and MFS movement throughout the day. Filter by branch, user or account to trace any transaction back to its voucher in seconds.",
+          "Every journal entry in date order, grouped by day with daily debit and credit subtotals. Filter by account or search by entry number, and export to CSV.",
       },
       trialBalance: {
         title: "Trial Balance",
         description:
-          "Live verification that total debits equal total credits across every ledger. Because entries post as they happen, there is no manual reconciliation delay before you can trust the numbers.",
+          "Live verification that total debits equal total credits across every ledger. Because entries post as they happen, there is no reconciliation delay before you can trust the numbers.",
       },
       cashMovement: {
-        title: "Cash Movement Ledger",
+        title: "Cash Movement",
         description:
-          "A detailed audit of vault transfers, safe drops and drawer float adjustments. Every taka of physical cash is accounted for between the till, the safe and the bank.",
+          "See the money that came into and went out of every cash, bank and MFS account, and what caused it. Sales, receipts, purchases, rent and salaries are each shown separately.",
       },
       yearEnd: {
         title: "Year-End Closing",
         description:
-          "Roll over to the new financial year automatically, closing income and expense ledgers into retained earnings. Opening balances carry forward and the closed year is locked against changes.",
+          "Close the financial year with a closing entry that moves income and expenses into retained earnings. A closed year can be reopened only with a recorded reason, and nothing is deleted.",
       },
-      inventoryBi: {
-        title: "Inventory BI Analytics",
+      inventoryHealth: {
+        title: "Inventory Health & Dead Stock BI",
         description:
-          "See your top-selling SKUs, stock turn ratios and gross profit margins by product, category and branch. Spot slow movers and dead stock before they tie up your working capital.",
+          "ABC analysis ranks products by revenue, and GMROI shows the gross margin each taka of stock earns. Dead and slow-moving items are listed with their days of cover and the capital they are holding.",
       },
+      auditLogs: {
+        title: "Audit Logs",
+        description:
+          "One timeline of stock adjustments, manual journals, voucher posts and voids, refunds, shift closes, coupons, campaigns and account security events. Each entry shows who did it, when and for how much.",
+      },
+      // ---- Omnichannel & Customer Growth
       socialOrders: {
-        title: "Social Online Orders",
+        title: "Social & Online Orders",
         description:
-          "Log orders that arrive through Facebook, WhatsApp or a phone call in the same system as your counter sales. Each order gets a courier consignment with automated tracking until it is delivered.",
+          "Log orders from Facebook, WhatsApp, phone calls or your website in the same system as counter sales. Track each one from Pending to Delivered or Returned, with the courier name and tracking number.",
       },
       codSettlement: {
         title: "COD Settlement",
         description:
-          "A dedicated ledger for Cash-on-Delivery money held by your couriers. Track what each courier has remitted, what is still pending and the charges deducted on every settlement.",
+          "Record the cash-on-delivery amount and any advance on every courier order. When the courier remits the money, the remittance posts to the ledger and pending COD is always visible.",
       },
       smsCampaigns: {
         title: "Targeted SMS Campaigns",
         description:
-          "Broadcast custom SMS promotions to segmented customer groups straight from the platform. Pick an audience, write the message and send, without exporting lists to another tool.",
+          "Send custom SMS promotions to a chosen customer segment now or at a scheduled time. See the estimated cost before sending, then sent and failed counts for every campaign.",
       },
       dueRecovery: {
         title: "Customer Balance & Due Recovery",
         description:
-          "Keep a running receivable balance for every credit customer, updated with each sale and payment. Send a payment reminder in one click and record collections against the right invoice.",
+          "Keep a running due balance for every credit customer, with a credit limit enforced at checkout. Send an SMS reminder to overdue customers in one click and record collections against their account.",
       },
       rfmInsights: {
         title: "RFM Audience Insights",
         description:
-          "Customers are grouped automatically into Champions, At-Risk and Dormant buyers based on how they actually shop. Use these audiences to target SMS campaigns and win back customers before they are lost.",
+          "Customers are scored on recency, frequency and spend and grouped into segments such as Champions, Loyal, Need Attention, At Risk and Lost. Target each segment with its own SMS campaign to win buyers back.",
       },
     },
   },
@@ -298,7 +345,7 @@ export const en = {
     items: {
       grocery: {
         title: "Supermarkets & Grocers",
-        body: "Fast barcode checkout, weighted items, Box⇄Piece selling and shift-level cash control for busy counters.",
+        body: "Fast barcode checkout, selling by weight, Box⇄Piece units and shift-level cash control for busy counters.",
         tags: ["Box⇄Piece", "Safe drops", "Z-reports"],
       },
       pharmacy: {
@@ -308,7 +355,7 @@ export const en = {
       },
       electronics: {
         title: "Electronics & Mobile Shops",
-        body: "Serial and IMEI captured on every unit, with warranty lookups, layaways and salesperson commissions.",
+        body: "Serial and IMEI captured on every unit, with unit-level history, layaways and tiered salesperson commissions.",
         tags: ["IMEI", "Layaways", "Commissions"],
       },
       fashion: {
@@ -376,7 +423,7 @@ export const en = {
           "Inter-branch transfers with GRN",
           "RFM segments & 4-tier loyalty",
           "SMS / WhatsApp receipts",
-          "Role permissions & audit trail",
+          "Role permissions & audit log",
         ],
       },
       enterprise: {
