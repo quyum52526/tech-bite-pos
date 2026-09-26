@@ -20,7 +20,7 @@ export default function CtaBanner() {
                 <a href={`mailto:${site.contactEmail}?subject=${encodeURIComponent(c.mailSubject)}`} className="btn-primary px-6">
                   {c.bookDemo} <ArrowRight className="h-4 w-4" />
                 </a>
-                <a href="#demo" className="btn-ghost px-6">
+                <a href="/#demo" className="btn-ghost px-6">
                   {c.tryDemo}
                 </a>
               </div>

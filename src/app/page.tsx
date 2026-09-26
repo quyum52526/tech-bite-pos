@@ -6,10 +6,12 @@ import UseCases from "@/components/UseCases";
 import Pricing from "@/components/Pricing";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
+import DocumentTitle from "@/components/DocumentTitle";
 
 export default function Home() {
   return (
     <>
+      <DocumentTitle />
       <Navbar />
       <main>
         <Hero />

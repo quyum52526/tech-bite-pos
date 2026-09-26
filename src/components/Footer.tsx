@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import Logo from "./Logo";
-import { featureCategories } from "@/lib/features";
+import { featureModules, moduleHref } from "@/lib/features";
 import { useI18n } from "@/lib/i18n";
 import { site } from "@/lib/site";
 
@@ -12,9 +13,9 @@ export default function Footer() {
     {
       title: f.product,
       links: [
-        { label: f.interactiveDemo, href: "#demo" },
-        { label: t.nav.pricing, href: "#pricing" },
-        { label: t.nav.useCases, href: "#use-cases" },
+        { label: f.interactiveDemo, href: "/#demo" },
+        { label: t.nav.pricing, href: "/#pricing" },
+        { label: t.nav.useCases, href: "/#use-cases" },
       ],
     },
     {
@@ -41,11 +42,11 @@ export default function Footer() {
           <div>
             <p className="text-sm font-semibold text-white">{f.features}</p>
             <ul className="mt-4 space-y-2 text-sm">
-              {featureCategories.map((c) => (
-                <li key={c.id}>
-                  <a href="#features" className="text-slate-400 hover:text-white">
-                    {t.features.categories[c.id].label}
-                  </a>
+              {featureModules.map((m) => (
+                <li key={m.slug}>
+                  <Link href={moduleHref(m.slug)} className="text-slate-400 hover:text-white">
+                    {t.features.modules[m.slug].label}
+                  </Link>
                 </li>
               ))}
             </ul>

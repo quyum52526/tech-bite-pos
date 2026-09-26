@@ -1,14 +1,14 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  // category icons
+  // module icons
   ShoppingCart,
   Package,
   Calculator,
-  HeartHandshake,
-  Building2,
+  Users,
   BarChart3,
   TrendingUp,
-  // sales
+  // pos & billing
+  MonitorSmartphone,
   ScanBarcode,
   Wallet,
   Vault,
@@ -17,7 +17,7 @@ import {
   FileText,
   MessageSquareText,
   Undo2,
-  // inventory
+  // inventory & supply chain
   CalendarX,
   Cpu,
   Truck,
@@ -31,130 +31,226 @@ import {
   Receipt,
   FileMinus,
   Landmark,
-  // crm
+  CalendarCheck,
+  // hr & payroll
+  IdCard,
+  ShieldCheck,
+  Fingerprint,
+  Clock,
+  Banknote,
+  BadgePercent,
+  // reports
+  FileSpreadsheet,
+  Percent,
+  Scale,
+  Hourglass,
+  BookText,
+  ArrowLeftRight,
+  UserCheck,
+  Activity,
+  History,
+  // omnichannel & growth
+  ShoppingBag,
+  HandCoins,
+  BellRing,
+  Megaphone,
+  UsersRound,
   Trophy,
   Cake,
   Layers,
   Gift,
-  // hr & security
-  IdCard,
-  Fingerprint,
-  Banknote,
-  BadgePercent,
-  ShieldCheck,
-  // reports
-  FileSpreadsheet,
-  Hourglass,
-  UserCheck,
-  BookText,
-  Scale,
-  ArrowLeftRight,
-  CalendarCheck,
-  Activity,
-  History,
-  // omnichannel
-  ShoppingBag,
-  HandCoins,
-  Megaphone,
-  BellRing,
-  UsersRound,
 } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/en";
 
 // Structure and icons only — all copy lives in src/lib/i18n/{en,bn}.ts.
 export type FeatureKey = keyof Dictionary["features"]["items"];
-export type CategoryId = keyof Dictionary["features"]["categories"];
+export type ModuleSlug = keyof Dictionary["features"]["modules"];
+export type GroupId = keyof Dictionary["features"]["groups"];
 
-export type FeatureCategory = {
-  id: CategoryId;
-  icon: LucideIcon;
-  features: { key: FeatureKey; icon: LucideIcon }[];
-};
+export type FeatureItem = { key: FeatureKey; icon: LucideIcon };
+export type FeatureGroup = { id: GroupId; items: FeatureItem[] };
+export type FeatureModule = { slug: ModuleSlug; icon: LucideIcon; groups: FeatureGroup[] };
 
-export const featureCategories: FeatureCategory[] = [
+/** One dedicated page per module at /features/[slug]; groups become the sticky pill bar. */
+export const featureModules: FeatureModule[] = [
   {
-    id: "sales",
+    slug: "pos-billing",
     icon: ShoppingCart,
-    features: [
-      { key: "barcode", icon: ScanBarcode },
-      { key: "shifts", icon: Wallet },
-      { key: "safeDrops", icon: Vault },
-      { key: "boxPiece", icon: Boxes },
-      { key: "layaways", icon: CalendarClock },
-      { key: "quotations", icon: FileText },
-      { key: "receipts", icon: MessageSquareText },
-      { key: "returns", icon: Undo2 },
+    groups: [
+      {
+        id: "checkout",
+        items: [
+          { key: "registers", icon: MonitorSmartphone },
+          { key: "barcode", icon: ScanBarcode },
+          { key: "boxPiece", icon: Boxes },
+          { key: "receipts", icon: MessageSquareText },
+        ],
+      },
+      {
+        id: "cashControl",
+        items: [
+          { key: "shifts", icon: Wallet },
+          { key: "safeDrops", icon: Vault },
+        ],
+      },
+      {
+        id: "ordersReturns",
+        items: [
+          { key: "layaways", icon: CalendarClock },
+          { key: "quotations", icon: FileText },
+          { key: "returns", icon: Undo2 },
+        ],
+      },
     ],
   },
   {
-    id: "inventory",
+    slug: "inventory-supply-chain",
     icon: Package,
-    features: [
-      { key: "fefo", icon: CalendarX },
-      { key: "serial", icon: Cpu },
-      { key: "transfers", icon: Truck },
-      { key: "audits", icon: ClipboardCheck },
-      { key: "bom", icon: PackageOpen },
-      { key: "purchasing", icon: ClipboardList },
+    groups: [
+      {
+        id: "tracking",
+        items: [
+          { key: "fefo", icon: CalendarX },
+          { key: "serial", icon: Cpu },
+        ],
+      },
+      {
+        id: "supplyChain",
+        items: [
+          { key: "transfers", icon: Truck },
+          { key: "purchasing", icon: ClipboardList },
+        ],
+      },
+      {
+        id: "stockControl",
+        items: [
+          { key: "audits", icon: ClipboardCheck },
+          { key: "bom", icon: PackageOpen },
+        ],
+      },
     ],
   },
   {
-    id: "accounting",
+    slug: "double-entry-accounting",
     icon: Calculator,
-    features: [
-      { key: "journals", icon: BookOpenCheck },
-      { key: "landed", icon: Ship },
-      { key: "mfs", icon: Smartphone },
-      { key: "zreport", icon: Receipt },
-      { key: "vouchers", icon: FileMinus },
-      { key: "accountTransfers", icon: Landmark },
+    groups: [
+      {
+        id: "ledger",
+        items: [
+          { key: "journals", icon: BookOpenCheck },
+          { key: "vouchers", icon: FileMinus },
+          { key: "accountTransfers", icon: Landmark },
+        ],
+      },
+      {
+        id: "costPayments",
+        items: [
+          { key: "landed", icon: Ship },
+          { key: "mfs", icon: Smartphone },
+        ],
+      },
+      {
+        id: "closing",
+        items: [
+          { key: "zreport", icon: Receipt },
+          { key: "yearEnd", icon: CalendarCheck },
+        ],
+      },
     ],
   },
   {
-    id: "crm",
-    icon: HeartHandshake,
-    features: [
-      { key: "loyalty", icon: Trophy },
-      { key: "coupons", icon: Cake },
-      { key: "tieredPromos", icon: Layers },
-      { key: "bxgy", icon: Gift },
+    slug: "hr-payroll",
+    icon: Users,
+    groups: [
+      {
+        id: "people",
+        items: [
+          { key: "staffDirectory", icon: IdCard },
+          { key: "roles", icon: ShieldCheck },
+        ],
+      },
+      {
+        id: "time",
+        items: [
+          { key: "attendance", icon: Fingerprint },
+          { key: "shiftLogs", icon: Clock },
+        ],
+      },
+      {
+        id: "pay",
+        items: [
+          { key: "payroll", icon: Banknote },
+          { key: "commissions", icon: BadgePercent },
+        ],
+      },
     ],
   },
   {
-    id: "security",
-    icon: Building2,
-    features: [
-      { key: "staffDirectory", icon: IdCard },
-      { key: "attendance", icon: Fingerprint },
-      { key: "payroll", icon: Banknote },
-      { key: "commissions", icon: BadgePercent },
-      { key: "roles", icon: ShieldCheck },
-    ],
-  },
-  {
-    id: "reports",
+    slug: "reports-analytics",
     icon: BarChart3,
-    features: [
-      { key: "pnl", icon: FileSpreadsheet },
-      { key: "payablesReceivables", icon: Hourglass },
-      { key: "cashierPerformance", icon: UserCheck },
-      { key: "dayBook", icon: BookText },
-      { key: "trialBalance", icon: Scale },
-      { key: "cashMovement", icon: ArrowLeftRight },
-      { key: "yearEnd", icon: CalendarCheck },
-      { key: "inventoryHealth", icon: Activity },
-      { key: "auditLogs", icon: History },
+    groups: [
+      {
+        id: "financials",
+        items: [
+          { key: "pnl", icon: FileSpreadsheet },
+          { key: "vat", icon: Percent },
+          { key: "trialBalance", icon: Scale },
+        ],
+      },
+      {
+        id: "balances",
+        items: [
+          { key: "payablesReceivables", icon: Hourglass },
+          { key: "dayBook", icon: BookText },
+          { key: "cashMovement", icon: ArrowLeftRight },
+        ],
+      },
+      {
+        id: "performance",
+        items: [
+          { key: "cashierPerformance", icon: UserCheck },
+          { key: "inventoryHealth", icon: Activity },
+          { key: "auditLogs", icon: History },
+        ],
+      },
     ],
   },
   {
-    id: "omnichannel",
+    slug: "omnichannel-growth",
     icon: TrendingUp,
-    features: [
-      { key: "socialOrders", icon: ShoppingBag },
-      { key: "codSettlement", icon: HandCoins },
-      { key: "smsCampaigns", icon: Megaphone },
-      { key: "dueRecovery", icon: BellRing },
-      { key: "rfmInsights", icon: UsersRound },
+    groups: [
+      {
+        id: "online",
+        items: [
+          { key: "socialOrders", icon: ShoppingBag },
+          { key: "codSettlement", icon: HandCoins },
+          { key: "dueRecovery", icon: BellRing },
+        ],
+      },
+      {
+        id: "marketing",
+        items: [
+          { key: "smsCampaigns", icon: Megaphone },
+          { key: "rfmInsights", icon: UsersRound },
+        ],
+      },
+      {
+        id: "loyalty",
+        items: [
+          { key: "loyalty", icon: Trophy },
+          { key: "coupons", icon: Cake },
+          { key: "tieredPromos", icon: Layers },
+          { key: "bxgy", icon: Gift },
+        ],
+      },
     ],
   },
 ];
+
+export const moduleSlugs = featureModules.map((m) => m.slug);
+
+export const getModule = (slug: string) => featureModules.find((m) => m.slug === slug);
+
+export const moduleHref = (slug: ModuleSlug) => `/features/${slug}`;
+
+export const countItems = (m: FeatureModule) => m.groups.reduce((n, g) => n + g.items.length, 0);

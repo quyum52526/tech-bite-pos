@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Menu, Play, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, Play, X } from "lucide-react";
 import Logo from "./Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
 import RegisterButton from "./RegisterButton";
-import { featureCategories } from "@/lib/features";
+import { featureModules, moduleHref } from "@/lib/features";
 import { useI18n } from "@/lib/i18n";
 
 export default function Navbar() {
@@ -14,11 +16,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [featuresOpen, setFeaturesOpen] = useState(false);
+  const pathname = usePathname();
 
+  // Home sections are addressed from every page ("/#demo"); the contact banner is on every page.
   const links = [
-    { href: "#demo", label: t.nav.demo },
-    { href: "#use-cases", label: t.nav.useCases },
-    { href: "#pricing", label: t.nav.pricing },
+    { href: "/#demo", label: t.nav.demo },
+    { href: "/#use-cases", label: t.nav.useCases },
+    { href: "/#pricing", label: t.nav.pricing },
   ];
 
   useEffect(() => {
@@ -28,11 +32,11 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const jumpToCategory = (id: string) => {
-    window.dispatchEvent(new CustomEvent("select-feature-tab", { detail: id }));
+  // Close menus after navigating to another page.
+  useEffect(() => {
     setFeaturesOpen(false);
     setMobileOpen(false);
-  };
+  }, [pathname]);
 
   return (
     <header
@@ -65,25 +69,39 @@ export default function Navbar() {
                   transition={{ duration: 0.15 }}
                   className="absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-2"
                 >
-                  <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-ink-800/95 p-2 shadow-2xl backdrop-blur-xl">
-                    {featureCategories.map((c) => (
-                      <a
-                        key={c.id}
-                        href="#features"
-                        onClick={() => jumpToCategory(c.id)}
-                        className="flex gap-3 rounded-xl p-3 transition hover:bg-white/5"
-                      >
-                        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-500/15 text-brand-300">
-                          <c.icon className="h-5 w-5" />
-                        </span>
-                        <span>
-                          <span className="block text-sm font-semibold text-white">
-                            {t.features.categories[c.id].label}
-                          </span>
-                          <span className="block text-xs text-slate-400">{t.features.categories[c.id].tagline}</span>
-                        </span>
-                      </a>
-                    ))}
+                  <div className="rounded-2xl border border-white/10 bg-ink-800/95 p-2 shadow-2xl backdrop-blur-xl">
+                    <div className="grid grid-cols-2 gap-1">
+                      {featureModules.map((m) => {
+                        const href = moduleHref(m.slug);
+                        const current = pathname === href;
+                        return (
+                          <Link
+                            key={m.slug}
+                            href={href}
+                            aria-current={current ? "page" : undefined}
+                            onClick={() => setFeaturesOpen(false)}
+                            className={`flex gap-3 rounded-xl p-3 transition hover:bg-white/5 ${current ? "bg-white/5" : ""}`}
+                          >
+                            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-500/15 text-brand-300">
+                              <m.icon className="h-5 w-5" />
+                            </span>
+                            <span>
+                              <span className="block text-sm font-semibold text-white">
+                                {t.features.modules[m.slug].label}
+                              </span>
+                              <span className="block text-xs text-slate-400">{t.features.modules[m.slug].tagline}</span>
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                    <Link
+                      href="/#features"
+                      onClick={() => setFeaturesOpen(false)}
+                      className="mt-1 flex items-center justify-center gap-1.5 rounded-xl border-t border-white/5 px-3 py-2.5 text-xs font-semibold text-brand-300 hover:bg-white/5"
+                    >
+                      {t.nav.allModules} <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
                   </div>
                 </motion.div>
               )}
@@ -111,7 +129,7 @@ export default function Navbar() {
           <a href="#contact" className="btn-ghost hidden whitespace-nowrap py-2 xl:inline-flex">
             {t.nav.contact}
           </a>
-          <a href="#demo" className="btn-ghost hidden whitespace-nowrap py-2 xl:inline-flex">
+          <a href="/#demo" className="btn-ghost hidden whitespace-nowrap py-2 xl:inline-flex">
             <Play className="h-4 w-4" /> {t.nav.liveDemo}
           </a>
           <RegisterButton />
@@ -142,16 +160,22 @@ export default function Navbar() {
               <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 {t.nav.features}
               </p>
-              {featureCategories.map((c) => (
-                <a
-                  key={c.id}
-                  href="#features"
-                  onClick={() => jumpToCategory(c.id)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
-                >
-                  <c.icon className="h-4 w-4 text-brand-400" /> {t.features.categories[c.id].label}
-                </a>
-              ))}
+              {featureModules.map((m) => {
+                const href = moduleHref(m.slug);
+                return (
+                  <Link
+                    key={m.slug}
+                    href={href}
+                    aria-current={pathname === href ? "page" : undefined}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5 ${
+                      pathname === href ? "bg-white/5 text-white" : ""
+                    }`}
+                  >
+                    <m.icon className="h-4 w-4 text-brand-400" /> {t.features.modules[m.slug].label}
+                  </Link>
+                );
+              })}
               <div className="my-2 h-px bg-white/5" />
               {links.map((l) => (
                 <a
@@ -167,7 +191,7 @@ export default function Navbar() {
                 <a href="#contact" onClick={() => setMobileOpen(false)} className="btn-ghost">
                   {t.nav.contact}
                 </a>
-                <a href="#demo" onClick={() => setMobileOpen(false)} className="btn-ghost">
+                <a href="/#demo" onClick={() => setMobileOpen(false)} className="btn-ghost">
                   <Play className="h-4 w-4" /> {t.nav.liveDemo}
                 </a>
               </div>
