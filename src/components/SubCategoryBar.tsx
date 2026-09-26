@@ -1,46 +1,56 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Check, TrendingUp, X } from "lucide-react";
 import { moduleHref, type FeatureModule, type GroupId } from "@/lib/features";
 import { fill, useI18n } from "@/lib/i18n";
 
-const POPOVER_WIDTH = 384; // px, shrinks to the bar width on small screens
-const EDGE = 20; // keeps the notch clear of the bar's rounded corners
+const POPOVER_WIDTH = 384; // px, shrinks to the container width on small screens
+const EDGE = 20; // keeps the popover arrow clear of its rounded corners
+const TREE_H = 56; // px between the module capsule and the pill tops (md and up)
+const SPLIT_Y = 24; // where the trunk splits into branches
+const MD = 768;
 
 type Props = {
   mod: FeatureModule;
-  /** The active tab in the module capsule above; the bar's notch points at its centre. */
+  /** The active tab in the module capsule above; the tree's trunk drops from its centre. */
   activeTab: HTMLElement | null;
-  /** The scrolling capsule, so the notch can follow the tab when the capsule scrolls. */
+  /** The scrolling capsule, so the trunk can follow the tab when the capsule scrolls. */
   capsule: HTMLElement | null;
 };
 
+type Tree = { trunk: number; pills: number[] };
+
 /**
- * Compact row of the active module's sub-categories (one scrollable line on phones, wrapping from sm up), hung under the module capsule with a notch
- * pointing at the active tab. Clicking a pill opens a quick-preview popover beside it; clicking
- * outside, pressing Escape or the close button dismisses it.
+ * The active module's sub-categories as a small tree: from md up, an SVG trunk drops from the
+ * active module tab, splits, and branches down into each sub-category pill; below md the pills
+ * fall back to one sideways-scrolling row with no lines. Clicking a pill opens a quick-preview
+ * popover beside it; clicking outside, pressing Escape or the close button dismisses it.
  */
 export default function SubCategoryBar({ mod, activeTab, capsule }: Props) {
   const { t, num } = useI18n();
+  const arrowId = `tree-arrow${useId().replace(/:/g, "")}`;
   const barRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLUListElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Partial<Record<GroupId, HTMLButtonElement | null>>>({});
-  const [notchX, setNotchX] = useState<number | null>(null);
+  const [tree, setTree] = useState<Tree | null>(null);
   const [open, setOpen] = useState<GroupId | null>(null);
   const [pop, setPop] = useState({ left: 0, width: POPOVER_WIDTH, arrow: 0 });
 
-  const measureNotch = useCallback(() => {
+  const measureTree = useCallback(() => {
     const bar = barRef.current;
-    if (!bar || !activeTab) return;
+    if (!bar || !activeTab || window.innerWidth < MD) return setTree(null);
     const b = bar.getBoundingClientRect();
-    const tab = activeTab.getBoundingClientRect();
-    const x = tab.left + tab.width / 2 - b.left;
-    setNotchX(Math.min(Math.max(x, EDGE), b.width - EDGE));
-  }, [activeTab]);
+    const centre = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.left + r.width / 2 - b.left;
+    };
+    const pills = mod.groups.map((g) => pillRefs.current[g.id]).filter((el): el is HTMLButtonElement => !!el);
+    setTree({ trunk: centre(activeTab), pills: pills.map(centre) });
+  }, [activeTab, mod.groups]);
 
   const measurePopover = useCallback((id: GroupId) => {
     const bar = barRef.current;
@@ -58,22 +68,25 @@ export default function SubCategoryBar({ mod, activeTab, capsule }: Props) {
   useEffect(() => setOpen(null), [mod.slug]);
 
   useLayoutEffect(() => {
-    measureNotch();
-    const onResize = () => {
-      measureNotch();
+    measureTree();
+    const remeasure = () => {
+      measureTree();
       if (open) measurePopover(open);
     };
-    const onRowScroll = () => open && measurePopover(open);
+    // Tab and pill widths change with the language and web-font load, not just the window.
+    const ro = new ResizeObserver(remeasure);
+    [barRef.current, rowRef.current, capsule].forEach((el) => el && ro.observe(el));
     const row = rowRef.current;
-    window.addEventListener("resize", onResize);
-    capsule?.addEventListener("scroll", measureNotch, { passive: true });
-    row?.addEventListener("scroll", onRowScroll, { passive: true });
+    window.addEventListener("resize", remeasure);
+    capsule?.addEventListener("scroll", measureTree, { passive: true });
+    row?.addEventListener("scroll", remeasure, { passive: true });
     return () => {
-      window.removeEventListener("resize", onResize);
-      capsule?.removeEventListener("scroll", measureNotch);
-      row?.removeEventListener("scroll", onRowScroll);
+      ro.disconnect();
+      window.removeEventListener("resize", remeasure);
+      capsule?.removeEventListener("scroll", measureTree);
+      row?.removeEventListener("scroll", remeasure);
     };
-  }, [measureNotch, measurePopover, capsule, open, mod.slug]);
+  }, [measureTree, measurePopover, capsule, open, mod.slug]);
 
   // Outside click and Escape dismiss the preview.
   useEffect(() => {
@@ -106,67 +119,96 @@ export default function SubCategoryBar({ mod, activeTab, capsule }: Props) {
   const label = t.features.modules[mod.slug].label;
   const group = open ? mod.groups.find((g) => g.id === open) : undefined;
 
+  const spring = { type: "spring", bounce: 0.15, duration: 0.5 } as const;
+  const span = tree && tree.pills.length ? [Math.min(tree.trunk, ...tree.pills), Math.max(tree.trunk, ...tree.pills)] : null;
+
   return (
-    <div ref={barRef} className="relative mx-auto mt-4 w-full max-w-4xl">
-      {/* notch pointing up at the active module tab */}
-      {notchX !== null && (
-        <motion.span
+    <div ref={barRef} className="relative mx-auto mt-4 w-full max-w-4xl md:mt-0 md:pt-14">
+      {/* branching connector, md and up */}
+      {tree && span && (
+        <svg
           aria-hidden
-          className="absolute -top-[7px] z-10 h-3.5 w-3.5 -translate-x-1/2 rotate-45 rounded-tl-[3px] border-l border-t border-emerald-400/25 bg-slate-900"
-          initial={false}
-          animate={{ left: notchX }}
-          transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
-        />
+          className="pointer-events-none absolute inset-x-0 top-0 hidden w-full overflow-visible md:block"
+          height={TREE_H}
+        >
+          <defs>
+            <marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M1,1 L9,5 L1,9 z" className="fill-emerald-400/80" />
+            </marker>
+          </defs>
+          <g strokeWidth={1.5} strokeLinecap="round" fill="none">
+            <motion.line
+              className="stroke-emerald-500/60"
+              initial={false}
+              animate={{ x1: tree.trunk, x2: tree.trunk, y1: 2, y2: SPLIT_Y }}
+              transition={spring}
+            />
+            <motion.line
+              className="stroke-emerald-500/60"
+              initial={false}
+              animate={{ x1: span[0], x2: span[1], y1: SPLIT_Y, y2: SPLIT_Y }}
+              transition={spring}
+            />
+            {tree.pills.map((x, i) => (
+              <motion.line
+                key={`${mod.slug}-${i}`}
+                x1={x}
+                x2={x}
+                y1={SPLIT_Y}
+                y2={TREE_H - 3}
+                markerEnd={`url(#${arrowId})`}
+                className={open === mod.groups[i]?.id ? "stroke-emerald-400" : "stroke-emerald-500/60"}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.35, delay: 0.15 + i * 0.05 }}
+              />
+            ))}
+          </g>
+          <motion.circle r={3.5} className="fill-emerald-400" initial={false} animate={{ cx: tree.trunk, cy: SPLIT_Y }} transition={spring} />
+        </svg>
       )}
 
-      <div
+      <motion.ul
+        ref={rowRef}
+        key={mod.slug}
         role="group"
         aria-label={fill(t.matrix.preview.bar, { module: label })}
-        className="rounded-2xl border border-emerald-400/25 bg-slate-900/95 px-2.5 py-2.5 shadow-xl shadow-black/40 backdrop-blur-md"
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className="-mx-1 flex items-center gap-2.5 overflow-x-auto px-1 py-2 [scrollbar-width:none] md:mx-0 md:justify-center md:gap-4 md:overflow-visible md:p-0 [&::-webkit-scrollbar]:hidden"
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.ul
-            ref={rowRef}
-            key={mod.slug}
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.18 }}
-            className="flex items-center gap-2 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:justify-center [&::-webkit-scrollbar]:hidden"
-          >
-            {mod.groups.map((g) => {
-              const on = open === g.id;
-              return (
-                <li key={g.id} className="shrink-0">
-                  <button
-                    ref={(el) => {
-                      pillRefs.current[g.id] = el;
-                    }}
-                    type="button"
-                    onClick={() => toggle(g.id)}
-                    aria-expanded={on}
-                    aria-controls={on ? "matrix-subcategory-preview" : undefined}
-                    className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
-                      on
-                        ? "border-emerald-400/60 bg-emerald-500/15 text-white"
-                        : "border-white/10 bg-white/[0.03] text-slate-300 hover:border-emerald-400/40 hover:text-white"
-                    }`}
-                  >
-                    {t.features.groups[g.id]}
-                    <span
-                      className={`rounded-full px-1.5 text-[11px] font-semibold tabular-nums ${
-                        on ? "bg-emerald-400/20 text-emerald-200" : "bg-slate-800 text-slate-400"
-                      }`}
-                    >
-                      {num(g.items.length)}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </motion.ul>
-        </AnimatePresence>
-      </div>
+        {mod.groups.map((g) => {
+          const on = open === g.id;
+          return (
+            <li key={g.id} className="shrink-0">
+              <button
+                ref={(el) => {
+                  pillRefs.current[g.id] = el;
+                }}
+                type="button"
+                onClick={() => toggle(g.id)}
+                aria-expanded={on}
+                aria-controls={on ? "matrix-subcategory-preview" : undefined}
+                className={`flex items-center gap-2.5 whitespace-nowrap rounded-full border py-2 pl-4 pr-2 text-sm font-medium shadow-lg shadow-black/40 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
+                  on
+                    ? "border-emerald-400 bg-emerald-500/15 text-white shadow-emerald-500/10"
+                    : "border-emerald-500/40 bg-slate-900 text-slate-200 hover:border-emerald-400 hover:bg-slate-800/80 hover:text-emerald-100"
+                }`}
+              >
+                {t.features.groups[g.id]}
+                <span
+                  className={`grid h-6 min-w-[1.5rem] place-items-center rounded-full px-1.5 text-xs font-semibold tabular-nums ring-1 ${
+                    on ? "bg-emerald-400 text-slate-950 ring-emerald-300" : "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
+                  }`}
+                >
+                  {num(g.items.length)}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </motion.ul>
 
       <AnimatePresence>
         {group && (
