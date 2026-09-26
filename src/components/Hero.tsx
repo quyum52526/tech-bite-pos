@@ -16,12 +16,12 @@ export default function Hero({ photo }: { photo?: string }) {
   return (
     <section id="top" className="relative overflow-hidden pb-20 pt-32 sm:pt-40">
       {photo ? (
-        // Store photo behind the copy. Layered gradients keep the text legible: a dark wash
-        // over the whole photo, extra darkening behind the headline, and a fade into the page.
+        // Store photo behind the copy. A left-to-right dark gradient keeps the text sharp while the
+        // store stays visible on the right; a light wash and a bottom fade blend it into the page.
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[44rem] sm:h-[48rem]">
           <Image src={photo} alt="" fill priority sizes="100vw" className="object-cover object-center" />
-          <div className="absolute inset-0 bg-ink-900/70" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_40%,rgba(10,15,26,0.75),transparent)]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+          <div className="absolute inset-0 bg-slate-950/30" />
           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent to-ink-900" />
         </div>
       ) : (

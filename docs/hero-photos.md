@@ -2,7 +2,7 @@
 
 The home hero and each `/features/[slug]` hero can show a real store photo. Put the file in
 `public/images/hero/`, named after its slot, and rebuild: `lib/media.ts` finds it at build time and the
-page switches from the illustrated fallback to the photo. No code change is needed.
+page uses it instead of the default Unsplash photo set in `lib/media.ts`. No code change is needed.
 
 | File (any of .avif .webp .jpg .jpeg .png) | Where it shows | Brief |
 |---|---|---|
