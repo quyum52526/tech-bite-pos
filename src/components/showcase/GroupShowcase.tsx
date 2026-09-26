@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import type { FeatureGroup, FeatureModule } from "@/lib/features";
@@ -16,6 +16,36 @@ export default function GroupShowcase({ mod, group, index }: Props) {
   const active = group.items.find((i) => i.key === activeKey) ?? group.items[0];
   const moduleLabel = t.features.modules[mod.slug].label;
   const flipped = index % 2 === 1;
+
+  // Deep links: /features/[slug]#[anchor] opens that capability, switches the mockup and scrolls to it.
+  useEffect(() => {
+    let timer: number | undefined;
+    const apply = () => {
+      const hash = decodeURIComponent(window.location.hash.slice(1));
+      const hit = group.items.find((i) => i.anchor === hash);
+      if (!hit) return;
+      setActiveKey(hit.key);
+      // Let the accordion settle, then scroll: the whole section on desktop (the mockup is beside it),
+      // the capability itself on small screens (its mockup opens inside it).
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        const desktop = window.matchMedia("(min-width: 1024px)").matches;
+        document.getElementById(desktop ? group.id : hit.anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 350);
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => {
+      window.removeEventListener("hashchange", apply);
+      window.clearTimeout(timer);
+    };
+  }, [group]);
+
+  const choose = (key: typeof activeKey, anchor: string) => {
+    setActiveKey(key);
+    // Keep the address bar shareable without triggering another scroll.
+    history.replaceState(null, "", `#${anchor}`);
+  };
 
   return (
     <section
@@ -44,7 +74,8 @@ export default function GroupShowcase({ mod, group, index }: Props) {
               return (
                 <div
                   key={f.key}
-                  className={`relative overflow-hidden rounded-2xl border transition-colors ${
+                  id={f.anchor}
+                  className={`relative scroll-mt-32 overflow-hidden rounded-2xl border transition-colors ${
                     open ? "border-brand-400/30 bg-white/[0.04]" : "border-white/5 bg-white/[0.015] hover:border-white/15"
                   }`}
                 >
@@ -60,7 +91,7 @@ export default function GroupShowcase({ mod, group, index }: Props) {
                       id={buttonId}
                       aria-expanded={open}
                       aria-controls={panelId}
-                      onClick={() => setActiveKey(f.key)}
+                      onClick={() => choose(f.key, f.anchor)}
                       className="flex w-full items-center gap-3 p-4 text-left sm:p-5"
                     >
                       <span

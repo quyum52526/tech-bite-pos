@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Features from "@/components/Features";
+import CapabilitiesMatrix from "@/components/CapabilitiesMatrix";
 import PosDemo from "@/components/PosDemo";
 import UseCases from "@/components/UseCases";
 import Pricing from "@/components/Pricing";
@@ -15,7 +15,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <Features />
+        <CapabilitiesMatrix />
         <PosDemo />
         <UseCases />
         <Pricing />

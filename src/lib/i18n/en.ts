@@ -66,10 +66,6 @@ export const en = {
     split: "Split",
   },
   features: {
-    eyebrow: "Features",
-    title: "One platform. Every counter, shelf and ledger.",
-    subtitle:
-      "Point of sale, inventory, accounting, reports, online orders, CRM, HR and branch security in one system that shares a single source of truth.",
     explore: "Explore module",
     modules: {
       "pos-billing": {
@@ -374,6 +370,18 @@ export const en = {
           "Customers are scored on recency, frequency and spend and grouped into segments such as Champions, Loyal, Need Attention, At Risk and Lost. Target each segment with its own SMS campaign to win buyers back.",
       },
     },
+  },
+  matrix: {
+    eyebrow: "Capabilities Matrix",
+    title: "Every capability, one click from a live demo screen",
+    subtitle:
+      "Six modules share one set of products, customers and ledger. Pick a module, scan its sub-categories and open any capability on its own page.",
+    helper: "Click any capability to explore live interactive mockups",
+    tablist: "Feature modules",
+    stats: { capabilities: "capabilities", modules: "modules", groups: "sub-categories" },
+    subCategory: "Sub-category",
+    count: "{n} capabilities",
+    openModule: "Open the {module} page",
   },
   showcase: {
     home: "Home",
