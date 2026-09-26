@@ -14,15 +14,19 @@ import {
   type ModuleSlug,
 } from "@/lib/features";
 import { fill, useI18n } from "@/lib/i18n";
+import SubCategoryBar from "./SubCategoryBar";
 
 /**
- * Home "Capabilities Matrix": module tabs → sub-category cards → one pill per capability,
+ * Home "Capabilities Matrix": module tabs → a sub-category quick-preview bar → sub-category
+ * cards → one pill per capability,
  * each deep-linking to /features/[slug]#[anchor], which opens that capability's mockup.
  */
 export default function CapabilitiesMatrix() {
   const { t, num } = useI18n();
   const [active, setActive] = useState<ModuleSlug>(featureModules[0].slug);
   const tabRefs = useRef<Partial<Record<ModuleSlug, HTMLButtonElement | null>>>({});
+  // state (not a ref) so the sub-category bar re-renders once the capsule has mounted
+  const [capsule, setCapsule] = useState<HTMLDivElement | null>(null);
   const mod = featureModules.find((m) => m.slug === active) ?? featureModules[0];
   const copy = t.features.modules[mod.slug];
 
@@ -72,6 +76,7 @@ export default function CapabilitiesMatrix() {
         {/* Module selector: one elevated capsule, centred (uses the container gutter on xl); scrolls sideways when it doesn't fit */}
         <div className="mt-12 flex justify-center xl:-mx-8">
           <div
+            ref={setCapsule}
             role="tablist"
             aria-label={t.matrix.tablist}
             className="inline-flex max-w-full items-center gap-1.5 overflow-x-auto rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-2xl shadow-black/50 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -115,6 +120,9 @@ export default function CapabilitiesMatrix() {
             })}
           </div>
         </div>
+
+        {/* Sub-category quick-preview bar, notched to the active tab */}
+        <SubCategoryBar mod={mod} activeTab={capsule ? (tabRefs.current[mod.slug] ?? null) : null} capsule={capsule} />
 
         <p className="mt-5 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
           <MousePointerClick className="h-4 w-4 shrink-0 text-brand-400" /> {t.matrix.helper}

@@ -111,6 +111,80 @@ export const en = {
           "Social and online orders, COD remittances, due recovery, targeted SMS campaigns, RFM scoring, loyalty tiers and automatic promotions.",
       },
     },
+    groupInfo: {
+      checkout: {
+        summary: "Ring up sales fast on as many tills as a branch needs, by barcode or by unit, with receipts sent or printed.",
+        value: "Queues move faster, and the counter keeps selling even when the internet drops.",
+      },
+      cashControl: {
+        summary: "Every drawer opens with a float and closes with a count, with safe drops and pay-ins recorded along the way.",
+        value: "Cash over or short is caught per cashier and per shift, and posted to the ledger automatically.",
+      },
+      ordersReturns: {
+        summary: "Take deposits on layaways, issue priced quotes, and handle returns and exchanges against the original invoice.",
+        value: "Bigger and repeat sales without spreadsheets, and refunds that keep stock and the books in step.",
+      },
+      tracking: {
+        summary: "Record every batch with its expiry date, and every unit with its serial or IMEI.",
+        value: "Older stock sells first, less goes out of date, and any unit traces back to its invoice.",
+      },
+      supplyChain: {
+        summary: "Move stock between branches with approval and a GRN, and buy from vendors through purchase orders.",
+        value: "Transfer losses are recorded with their value, and vendor balances stay accurate.",
+      },
+      stockControl: {
+        summary: "Run approved physical counts, and turn bulk stock into retail packs or bundles.",
+        value: "Stock in the system matches the shelf, and finished goods carry their true cost.",
+      },
+      ledger: {
+        summary: "Every sale, purchase, payment and payroll run posts balanced journals; vouchers and transfers cover the rest.",
+        value: "Your books stay current as you trade, with no month-end re-keying.",
+      },
+      costPayments: {
+        summary: "Spread freight, duty and handling into product cost, and keep a ledger for each mobile wallet.",
+        value: "Margins reflect the true landed cost, and bKash, Nagad and Rocket reconcile line by line.",
+      },
+      closing: {
+        summary: "Close each day with a Z-report and each financial year with a proper closing entry.",
+        value: "A clean daily record of sales and cash, and year-ends that never delete history.",
+      },
+      people: {
+        summary: "One directory of staff, designations and branches, with role permissions on every login.",
+        value: "Only the right people can override discounts, void sales or see cost prices.",
+      },
+      time: {
+        summary: "Daily check-in and check-out, plus a log of every cashier shift.",
+        value: "Late days and absences flow into payroll, and a short drawer traces back to a person and a day.",
+      },
+      pay: {
+        summary: "Monthly payroll with pay slips, and tiered commission rules for salespeople.",
+        value: "Salaries post straight to the ledger, and commission is calculated from tagged sales.",
+      },
+      financials: {
+        summary: "P&L, balance sheet, VAT summary and trial balance, calculated from posted journals.",
+        value: "Trust your numbers on any day of the month, not just after closing.",
+      },
+      balances: {
+        summary: "Payables and receivables aging, the day book, and cash movement across every account.",
+        value: "See who owes what and where the cash went, so you chase the oldest balances first.",
+      },
+      performance: {
+        summary: "Sales by branch and cashier, inventory health with dead-stock analysis, and a full audit log.",
+        value: "Spot weak branches, capital stuck in slow stock and unusual activity early.",
+      },
+      online: {
+        summary: "Log Facebook, WhatsApp, phone and website orders, settle COD, and recover customer dues.",
+        value: "Online sales and credit customers sit in the same books as the counter, so no taka owed is forgotten.",
+      },
+      marketing: {
+        summary: "Score customers by recency, frequency and spend, and send SMS to the right segment.",
+        value: "Win back at-risk buyers with campaigns whose cost you see before you send.",
+      },
+      loyalty: {
+        summary: "A four-tier loyalty ladder, birthday coupons, volume and bundle pricing, and buy-X-get-Y offers.",
+        value: "Customers come back more often, and promotions apply at the till without manual work.",
+      },
+    },
     groups: {
       checkout: "Checkout & Registers",
       cashControl: "Cash Control",
@@ -382,6 +456,13 @@ export const en = {
     subCategory: "Sub-category",
     count: "{n} capabilities",
     openModule: "Open the {module} page",
+    preview: {
+      bar: "{module} sub-categories",
+      capabilities: "Core capabilities",
+      value: "Business value",
+      cta: "View in detail on feature page",
+      close: "Close preview",
+    },
   },
   media: {
     alt: {
