@@ -20,7 +20,7 @@ src/
   app/features/[slug]/    one statically generated page per feature module
   components/             Navbar, Hero, PosMockup, CapabilitiesMatrix (home feature directory), PosDemo,
                           UseCases, Pricing, CtaBanner, Footer, DocumentTitle
-  components/showcase/    feature-page UI: FeaturePage, SubNav (sticky pill bar), GroupShowcase
+  components/showcase/    feature-page UI: FeaturePage, HeroVisual (counter illustration), SubNav (floating capsule), GroupShowcase
                           (accordion + mockup split), MockupWindow (renderer), mockups.ts (screen data)
   lib/features.ts         modules → sub-modules → capabilities: structure, icons and URL anchors
   lib/i18n/               en.ts (source) + bn.ts (Bangla, type-checked against en) and the LanguageProvider

@@ -51,7 +51,7 @@ export default function GroupShowcase({ mod, group, index }: Props) {
     <section
       id={group.id}
       aria-labelledby={`${group.id}-title`}
-      className={`scroll-mt-32 py-16 sm:py-20 ${flipped ? "border-y border-white/5 bg-white/[0.015]" : ""}`}
+      className={`scroll-mt-40 py-16 sm:py-20 ${flipped ? "border-y border-white/5 bg-white/[0.015]" : ""}`}
     >
       <div className="container-x">
         <div className="max-w-2xl">
@@ -75,7 +75,7 @@ export default function GroupShowcase({ mod, group, index }: Props) {
                 <div
                   key={f.key}
                   id={f.anchor}
-                  className={`relative scroll-mt-32 overflow-hidden rounded-2xl border transition-colors ${
+                  className={`relative scroll-mt-40 overflow-hidden rounded-2xl border transition-colors ${
                     open ? "border-brand-400/30 bg-white/[0.04]" : "border-white/5 bg-white/[0.015] hover:border-white/15"
                   }`}
                 >
@@ -139,7 +139,7 @@ export default function GroupShowcase({ mod, group, index }: Props) {
           </div>
 
           {/* Large screens: the mockup follows the active item */}
-          <div className={`sticky top-36 hidden lg:block ${flipped ? "lg:order-1" : ""}`}>
+          <div className={`sticky top-40 hidden lg:block ${flipped ? "lg:order-1" : ""}`}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={active.key}

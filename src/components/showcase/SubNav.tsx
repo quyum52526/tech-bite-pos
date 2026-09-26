@@ -12,23 +12,30 @@ export default function SubNav({ mod }: { mod: FeatureModule }) {
   const barRef = useRef<HTMLElement>(null);
   const lockUntil = useRef(0);
 
-  // Scroll-spy: the section crossing the upper part of the viewport is the active one.
+  // Scroll-spy: the active sub-module is the last section whose top has passed under the capsule.
   useEffect(() => {
-    const sections = mod.groups
-      .map((g) => document.getElementById(g.id))
-      .filter((el): el is HTMLElement => el !== null);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (Date.now() < lockUntil.current) return;
-        const hit = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (hit) setActive(hit.target.id as GroupId);
-      },
-      { rootMargin: "-130px 0px -55% 0px" },
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (Date.now() < lockUntil.current) return;
+      let current: GroupId = mod.groups[0].id;
+      for (const g of mod.groups) {
+        const el = document.getElementById(g.id);
+        if (el && el.getBoundingClientRect().top <= 170) current = g.id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, [mod]);
 
   // Keep the active pill visible when the bar overflows on small screens.
@@ -47,17 +54,20 @@ export default function SubNav({ mod }: { mod: FeatureModule }) {
   }, []);
 
   return (
-    <div className="sticky top-16 z-40 border-y border-white/5 bg-ink-900/85 backdrop-blur-xl">
-      <div className="container-x flex items-center gap-4">
-        <span className="hidden shrink-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 md:flex">
-          <mod.icon className="h-4 w-4 text-brand-400" />
-          {t.showcase.subNav}
-        </span>
+    // Transparent sticky rail; only the capsule itself is visible and clickable.
+    <div className="pointer-events-none sticky top-[4.5rem] z-40 py-3">
+      <div className="container-x flex justify-center">
         <nav
           ref={barRef}
           aria-label={t.showcase.subNav}
-          className="-mx-4 flex flex-1 gap-1.5 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden"
+          className="pointer-events-auto inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-slate-700/80 bg-slate-900/95 p-1.5 shadow-2xl shadow-black/60 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
+          <span
+            aria-hidden
+            className="mr-1 hidden h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-800 text-emerald-400 sm:grid"
+          >
+            <mod.icon className="h-4 w-4" />
+          </span>
           {mod.groups.map((g) => {
             const on = g.id === active;
             return (
@@ -70,14 +80,14 @@ export default function SubNav({ mod }: { mod: FeatureModule }) {
                   e.preventDefault();
                   jump(g.id);
                 }}
-                className={`relative shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  on ? "text-white" : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                className={`relative shrink-0 whitespace-nowrap rounded-full py-2 text-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
+                  on ? "px-5 font-semibold text-slate-950" : "px-4 font-medium text-slate-400 hover:text-white"
                 }`}
               >
                 {on && (
                   <motion.span
                     layoutId="subnav-pill"
-                    className="absolute inset-0 rounded-full bg-brand-500/20 ring-1 ring-brand-400/40"
+                    className="absolute inset-0 rounded-full bg-emerald-500 shadow-md shadow-emerald-500/30"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
                   />
                 )}
