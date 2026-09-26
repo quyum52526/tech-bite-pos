@@ -8,6 +8,7 @@ import FeaturePage from "@/components/showcase/FeaturePage";
 import { getModule, moduleSlugs } from "@/lib/features";
 import { en } from "@/lib/i18n/en";
 import { site } from "@/lib/site";
+import { heroPhoto } from "@/lib/media";
 
 type Params = { params: { slug: string } };
 
@@ -35,7 +36,7 @@ export default function FeatureRoute({ params }: Params) {
       <DocumentTitle slug={mod.slug} />
       <Navbar />
       <main>
-        <FeaturePage slug={mod.slug} />
+        <FeaturePage slug={mod.slug} photo={heroPhoto(mod.slug)} />
         <CtaBanner />
       </main>
       <Footer />

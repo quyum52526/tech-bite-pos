@@ -10,7 +10,7 @@ import GroupShowcase from "./GroupShowcase";
 import SubNav from "./SubNav";
 import HeroVisual from "./HeroVisual";
 
-export default function FeaturePage({ slug }: { slug: ModuleSlug }) {
+export default function FeaturePage({ slug, photo }: { slug: ModuleSlug; photo?: string }) {
   const { t, num } = useI18n();
   const mod = getModule(slug);
   if (!mod) return null;
@@ -75,7 +75,7 @@ export default function FeaturePage({ slug }: { slug: ModuleSlug }) {
               </div>
             </motion.div>
 
-            <HeroVisual mod={mod} />
+            <HeroVisual mod={mod} photo={photo} />
           </div>
         </div>
       </section>

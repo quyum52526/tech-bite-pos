@@ -383,6 +383,17 @@ export const en = {
     count: "{n} capabilities",
     openModule: "Open the {module} page",
   },
+  media: {
+    alt: {
+      home: "A modern retail store checkout lane with stocked shelves and warm lighting",
+      "pos-billing": "A retail checkout counter with a barcode scanner and a POS register",
+      "inventory-supply-chain": "Well-organised store aisles with fully stocked shelves",
+      "double-entry-accounting": "A store manager's desk with financial statements and a tablet ledger",
+      "hr-payroll": "A retail team working together on the shop floor",
+      "reports-analytics": "A business owner reviewing a sales dashboard inside a busy boutique",
+      "omnichannel-growth": "Packed online-order parcels at a dispatch counter",
+    },
+  },
   showcase: {
     home: "Home",
     features: "Features",

@@ -7,6 +7,7 @@ import Pricing from "@/components/Pricing";
 import CtaBanner from "@/components/CtaBanner";
 import Footer from "@/components/Footer";
 import DocumentTitle from "@/components/DocumentTitle";
+import { heroPhoto } from "@/lib/media";
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
       <DocumentTitle />
       <Navbar />
       <main>
-        <Hero />
+        <Hero photo={heroPhoto("home")} />
         <CapabilitiesMatrix />
         <PosDemo />
         <UseCases />

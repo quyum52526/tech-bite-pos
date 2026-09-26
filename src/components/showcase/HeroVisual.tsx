@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { CheckCircle2, Wifi } from "lucide-react";
 import { countItems, type FeatureModule } from "@/lib/features";
@@ -16,7 +17,94 @@ const shelves: [number, string][][] = [
  * Hero illustration for a module page: a shop counter with a POS terminal showing the
  * module's first capability, a receipt printing beside it, and store shelves behind.
  */
-export default function HeroVisual({ mod }: { mod: FeatureModule }) {
+export default function HeroVisual({ mod, photo }: { mod: FeatureModule; photo?: string }) {
+  if (photo) return <PhotoVisual mod={mod} photo={photo} />;
+  return <Illustration mod={mod} />;
+}
+
+/**
+ * With a store photo for the module (public/images/hero/[slug].*): the photo in a rounded
+ * frame, with the POS terminal showing the module's first capability layered over its corner.
+ */
+function PhotoVisual({ mod, photo }: { mod: FeatureModule; photo: string }) {
+  const { t, num } = useI18n();
+  const first = mod.groups[0].items[0];
+  const moduleLabel = t.features.modules[mod.slug].label;
+
+  return (
+    <div className="relative mx-auto w-full max-w-xl pb-16 sm:pb-20 lg:max-w-none">
+      <div aria-hidden className="pointer-events-none absolute -right-10 top-4 h-72 w-72 rounded-full bg-amber-400/15 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -left-10 bottom-10 h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl" />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-700/60 bg-slate-900 shadow-2xl shadow-black/50"
+      >
+        <Image
+          src={photo}
+          alt={t.media.alt[mod.slug]}
+          fill
+          priority
+          sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, (min-width: 640px) 576px, 100vw"
+          className="object-cover"
+        />
+        {/* grounds the terminal and chips; keeps the photo from fighting the dark page */}
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/10 to-ink-900/20" />
+      </motion.div>
+
+      {/* POS terminal layered over the photo */}
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="absolute bottom-0 left-3 z-10 w-[78%] sm:-left-6 sm:w-[64%]"
+      >
+        <div className="rounded-[1.25rem] border border-slate-700 bg-slate-950 p-1.5 shadow-2xl shadow-black/70 ring-1 ring-white/5">
+          <div className="relative h-44 overflow-hidden rounded-xl sm:h-52">
+            <div className="w-[125%] origin-top-left scale-[0.8]">
+              <MockupWindow featureKey={first.key} icon={first.icon} moduleLabel={moduleLabel} />
+            </div>
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-slate-950 to-transparent" />
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-full border border-emerald-400/30 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-emerald-300 shadow-xl backdrop-blur sm:right-4 sm:top-4"
+      >
+        <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> {t.mockup.synced}
+        <span className="hidden sm:inline">· {t.hero.pillars[2]}</span>
+      </motion.div>
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.95 }}
+        className="absolute bottom-8 right-3 z-20 hidden items-center gap-2.5 rounded-2xl border border-white/10 bg-slate-900/95 px-3.5 py-2 shadow-xl backdrop-blur sm:right-4 sm:flex"
+      >
+        <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-500 text-slate-950">
+          <mod.icon className="h-4 w-4" />
+        </span>
+        <span className="text-xs leading-tight">
+          <span className="block font-semibold text-white">{fill(t.showcase.capabilities, { n: num(countItems(mod)) })}</span>
+          <span className="flex items-center gap-1 text-slate-400">
+            <CheckCircle2 className="h-3 w-3 text-emerald-400" /> {t.hero.pillars[1]}
+          </span>
+        </span>
+      </motion.div>
+    </div>
+  );
+}
+
+/** Fallback without a photo: the illustrated shop counter. */
+function Illustration({ mod }: { mod: FeatureModule }) {
   const { t, num, taka } = useI18n();
   const first = mod.groups[0].items[0];
   const moduleLabel = t.features.modules[mod.slug].label;

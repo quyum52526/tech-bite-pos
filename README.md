@@ -26,6 +26,7 @@ src/
   lib/i18n/               en.ts (source) + bn.ts (Bangla, type-checked against en) and the LanguageProvider
   lib/site.ts             contact details and pricing plans (yearly = 10 × monthly)
 public/logo.svg           brand mark used in the navbar and footer
+public/images/hero/       optional store photos for the heroes (see docs/hero-photos.md)
 ```
 
 ## Feature pages
