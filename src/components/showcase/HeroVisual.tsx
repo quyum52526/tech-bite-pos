@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { CheckCircle2, Wifi } from "lucide-react";
+import { CheckCircle2, MapPin, Wifi } from "lucide-react";
 import { countItems, type FeatureModule } from "@/lib/features";
 import { fill, useI18n } from "@/lib/i18n";
 import MockupWindow from "./MockupWindow";
@@ -23,8 +23,9 @@ export default function HeroVisual({ mod, photo }: { mod: FeatureModule; photo?:
 }
 
 /**
- * With a store photo for the module (public/images/hero/[slug].*): the photo in a rounded
- * frame, with the POS terminal showing the module's first capability layered over its corner.
+ * With a store photo for the module: the product leads. The module's first capability fills
+ * the frame as a full-size app window; the store photo sits faintly behind it as ambience and
+ * again as a small captioned card in the corner, so it gives context without competing.
  */
 function PhotoVisual({ mod, photo }: { mod: FeatureModule; photo: string }) {
   const { t, num } = useI18n();
@@ -32,62 +33,54 @@ function PhotoVisual({ mod, photo }: { mod: FeatureModule; photo: string }) {
   const moduleLabel = t.features.modules[mod.slug].label;
 
   return (
-    <div className="relative mx-auto w-full max-w-xl pb-16 sm:pb-20 lg:max-w-none">
-      <div aria-hidden className="pointer-events-none absolute -right-10 top-4 h-72 w-72 rounded-full bg-amber-400/15 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -left-10 bottom-10 h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl" />
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-700/60 bg-slate-900 shadow-2xl shadow-black/50"
-      >
+    <div className="relative mx-auto w-full max-w-xl pb-10 sm:pb-36 lg:max-w-none">
+      {/* ambient store photo, bleeding past the app window */}
+      <div aria-hidden className="pointer-events-none absolute -inset-x-4 -inset-y-6 overflow-hidden rounded-[2.5rem] sm:-inset-x-8">
         <Image
           src={photo}
-          alt={t.media.alt[mod.slug]}
+          alt=""
           fill
           priority
-          sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, (min-width: 640px) 576px, 100vw"
-          className="object-cover"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          className="scale-105 object-cover opacity-30 blur-[1px]"
         />
-        {/* grounds the terminal and chips; keeps the photo from fighting the dark page */}
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/10 to-ink-900/20" />
-      </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-br from-ink-900/40 via-ink-900/70 to-ink-900" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(10,15,26,0.9))]" />
+      </div>
 
-      {/* POS terminal layered over the photo */}
+      {/* the product: full-size, fully legible app window */}
       <motion.div
         aria-hidden
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="absolute bottom-0 left-3 z-10 w-[78%] sm:-left-6 sm:w-[64%]"
+        transition={{ duration: 0.6 }}
+        className="relative z-10"
       >
-        <div className="rounded-[1.25rem] border border-slate-700 bg-slate-950 p-1.5 shadow-2xl shadow-black/70 ring-1 ring-white/5">
-          <div className="relative h-44 overflow-hidden rounded-xl sm:h-52">
-            <div className="w-[125%] origin-top-left scale-[0.8]">
-              <MockupWindow featureKey={first.key} icon={first.icon} moduleLabel={moduleLabel} />
-            </div>
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-slate-950 to-transparent" />
-          </div>
-        </div>
+        <MockupWindow featureKey={first.key} icon={first.icon} moduleLabel={moduleLabel} />
       </motion.div>
 
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-full border border-emerald-400/30 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-emerald-300 shadow-xl backdrop-blur sm:right-4 sm:top-4"
+      {/* store photo as a small contextual card, hanging below the window so it never hides data */}
+      <motion.figure
+        initial={{ opacity: 0, y: 12, rotate: 0 }}
+        animate={{ opacity: 1, y: 0, rotate: 3 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="absolute -right-2 bottom-0 z-20 hidden w-44 rounded-2xl border border-white/10 bg-slate-900/95 p-1.5 shadow-2xl shadow-black/60 backdrop-blur sm:block lg:-right-6"
       >
-        <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> {t.mockup.synced}
-        <span className="hidden sm:inline">· {t.hero.pillars[2]}</span>
-      </motion.div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+          <Image src={photo} alt={t.media.alt[mod.slug]} fill sizes="176px" className="object-cover" />
+        </div>
+        <figcaption className="flex items-center gap-1.5 px-1.5 pb-0.5 pt-2 text-[11px] font-semibold text-slate-200">
+          <MapPin className="h-3 w-3 shrink-0 text-emerald-400" />
+          <span className="truncate">{t.media.badge[mod.slug]}</span>
+        </figcaption>
+      </motion.figure>
+
       <motion.div
         aria-hidden
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.95 }}
-        className="absolute bottom-8 right-3 z-20 hidden items-center gap-2.5 rounded-2xl border border-white/10 bg-slate-900/95 px-3.5 py-2 shadow-xl backdrop-blur sm:right-4 sm:flex"
+        transition={{ delay: 0.8 }}
+        className="absolute -bottom-2 right-3 z-20 flex items-center gap-2.5 rounded-2xl border border-white/10 bg-slate-900/95 px-3.5 py-2 shadow-xl backdrop-blur sm:bottom-12 sm:left-2 sm:right-auto"
       >
         <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-500 text-slate-950">
           <mod.icon className="h-4 w-4" />

@@ -393,6 +393,15 @@ export const en = {
       "reports-analytics": "A business owner reviewing a sales dashboard inside a busy boutique",
       "omnichannel-growth": "Packed online-order parcels at a dispatch counter",
     },
+    // Caption on the small store-photo card beside each module's hero mockup.
+    badge: {
+      "pos-billing": "Agrabad Branch · Till 02",
+      "inventory-supply-chain": "Agrabad Branch Stockroom",
+      "double-entry-accounting": "Agrabad Branch Accounts",
+      "hr-payroll": "Agrabad Branch Staff",
+      "reports-analytics": "Agrabad Branch Sales Floor",
+      "omnichannel-growth": "Agrabad Branch Dispatch",
+    },
   },
   showcase: {
     home: "Home",

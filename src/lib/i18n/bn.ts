@@ -395,6 +395,14 @@ export const bn: Dictionary = {
       "reports-analytics": "ব্যস্ত একটি বুটিকে বিক্রয়ের ড্যাশবোর্ড দেখছেন একজন ব্যবসায়ী",
       "omnichannel-growth": "ডিসপ্যাচ কাউন্টারে প্যাক করা অনলাইন অর্ডারের পার্সেল",
     },
+    badge: {
+      "pos-billing": "আগ্রাবাদ শাখা · টিল ০২",
+      "inventory-supply-chain": "আগ্রাবাদ শাখার স্টকরুম",
+      "double-entry-accounting": "আগ্রাবাদ শাখার হিসাব",
+      "hr-payroll": "আগ্রাবাদ শাখার কর্মীরা",
+      "reports-analytics": "আগ্রাবাদ শাখার বিক্রয় ফ্লোর",
+      "omnichannel-growth": "আগ্রাবাদ শাখার ডিসপ্যাচ",
+    },
   },
   showcase: {
     home: "হোম",
