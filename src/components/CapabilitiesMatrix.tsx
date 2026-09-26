@@ -50,10 +50,13 @@ export default function CapabilitiesMatrix() {
   return (
     <section id="features" className="relative py-24">
       <div className="container-x">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-6xl text-center">
           <span className="eyebrow">{t.matrix.eyebrow}</span>
-          <h2 className="section-title mt-4">{t.matrix.title}</h2>
-          <p className="mt-4 text-slate-400">{t.matrix.subtitle}</p>
+          {/* One line from lg up: the size steps down at lg so the full sentence fits the container. */}
+          <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight text-white sm:text-4xl lg:whitespace-nowrap lg:text-[2.15rem] xl:text-4xl">
+            {t.matrix.title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-slate-400">{t.matrix.subtitle}</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             {stats.map((s) => (
               <span
@@ -66,50 +69,51 @@ export default function CapabilitiesMatrix() {
           </div>
         </div>
 
-        {/* Module selector */}
-        <div
-          role="tablist"
-          aria-label={t.matrix.tablist}
-          className="-mx-4 mt-12 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
-        >
-          {featureModules.map((m, i) => {
-            const on = m.slug === active;
-            return (
-              <button
-                key={m.slug}
-                ref={(el) => {
-                  tabRefs.current[m.slug] = el;
-                }}
-                id={`matrix-tab-${m.slug}`}
-                role="tab"
-                aria-selected={on}
-                aria-controls="matrix-panel"
-                tabIndex={on ? 0 : -1}
-                onClick={() => select(m.slug)}
-                onKeyDown={(e) => onKeyDown(e, i)}
-                className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
-                  on ? "text-white" : "border border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200"
-                }`}
-              >
-                {on && (
-                  <motion.span
-                    layoutId="matrix-tab"
-                    className="absolute inset-0 rounded-full bg-brand-500/20 ring-1 ring-brand-400/50"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
-                  />
-                )}
-                <m.icon className={`relative h-4 w-4 ${on ? "text-brand-300" : ""}`} />
-                <span className="relative">{t.features.modules[m.slug].label}</span>
-                <span
-                  className={`relative rounded-full px-1.5 text-[11px] font-semibold ${
-                    on ? "bg-brand-400/20 text-brand-200" : "bg-white/5 text-slate-500"
+        {/* Module selector: one elevated capsule, centred (uses the container gutter on xl); scrolls sideways when it doesn't fit */}
+        <div className="mt-12 flex justify-center xl:-mx-8">
+          <div
+            role="tablist"
+            aria-label={t.matrix.tablist}
+            className="inline-flex max-w-full items-center gap-1.5 overflow-x-auto rounded-full border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-2xl shadow-black/50 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {featureModules.map((m, i) => {
+              const on = m.slug === active;
+              return (
+                <button
+                  key={m.slug}
+                  ref={(el) => {
+                    tabRefs.current[m.slug] = el;
+                  }}
+                  id={`matrix-tab-${m.slug}`}
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls="matrix-panel"
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => select(m.slug)}
+                  onKeyDown={(e) => onKeyDown(e, i)}
+                  className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
+                    on ? "font-semibold text-slate-950" : "font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white"
                   }`}
                 >
-                  {num(countItems(m))}
-                </span>
-              </button>
-            );
-          })}
+                  {on && (
+                    <motion.span
+                      layoutId="matrix-tab"
+                      className="absolute inset-0 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
+                    />
+                  )}
+                  <span className="relative">{t.features.modules[m.slug].label}</span>
+                  <span
+                    className={`relative min-w-[1.25rem] rounded-full px-1.5 py-px text-center text-[11px] font-semibold tabular-nums ${
+                      on ? "bg-slate-950/15 text-slate-950" : "bg-slate-800 text-slate-400"
+                    }`}
+                  >
+                    {num(countItems(m))}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <p className="mt-5 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
