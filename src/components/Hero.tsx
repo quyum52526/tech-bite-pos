@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, CloudOff, GitBranch, MousePointerClick, RefreshCcw } from "lucide-react";
-import PosMockup from "./PosMockup";
 import RegisterButton from "./RegisterButton";
 import { useI18n } from "@/lib/i18n";
 
@@ -68,15 +67,6 @@ export default function Hero({ photo }: { photo?: string }) {
               );
             })}
           </ul>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 48, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative mx-auto mt-16 max-w-6xl"
-        >
-          <PosMockup />
         </motion.div>
       </div>
     </section>

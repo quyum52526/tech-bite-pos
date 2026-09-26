@@ -125,7 +125,7 @@ export default function PosDemo() {
   ] as const;
 
   return (
-    <section id="demo" className="relative py-24">
+    <section id="demo" className="relative scroll-mt-16 pb-24 pt-8 sm:pt-12">
       <div className="pointer-events-none absolute inset-x-0 top-1/3 mx-auto h-96 max-w-4xl rounded-full bg-brand-500/10 blur-3xl" />
       <div className="container-x relative">
         <div className="mx-auto max-w-5xl text-center">

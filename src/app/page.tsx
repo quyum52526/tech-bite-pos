@@ -16,8 +16,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero photo={heroPhoto("home")} />
-        <CapabilitiesMatrix />
         <PosDemo />
+        <CapabilitiesMatrix />
         <UseCases />
         <Pricing />
         <CtaBanner />
