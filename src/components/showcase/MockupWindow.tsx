@@ -366,10 +366,12 @@ type Props = {
   featureKey: FeatureKey;
   icon: LucideIcon;
   moduleLabel: string;
+  /** Extra classes for the content area, e.g. bottom padding to keep room for an overlay. */
+  bodyClassName?: string;
 };
 
 /** Browser-style app window that renders the mockup for one capability. */
-export default function MockupWindow({ featureKey, icon: Icon, moduleLabel }: Props) {
+export default function MockupWindow({ featureKey, icon: Icon, moduleLabel, bodyClassName = "" }: Props) {
   const { t, lang, num, taka } = useI18n();
 
   const spec = useMemo(() => {
@@ -412,7 +414,7 @@ export default function MockupWindow({ featureKey, icon: Icon, moduleLabel }: Pr
           initial="hidden"
           animate="show"
           variants={{ show: { transition: { staggerChildren: 0.07 } } }}
-          className="space-y-3 p-3 sm:p-5"
+          className={`space-y-3 p-3 sm:p-5 ${bodyClassName}`}
         >
           <motion.div variants={item} className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
             <div className="flex min-w-0 items-center gap-3">

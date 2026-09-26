@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight, Layers3, MousePointerClick, Sparkles } from "lucide-react";
@@ -21,6 +22,14 @@ export default function FeaturePage({ slug, photo }: { slug: ModuleSlug; photo?:
     <>
       {/* Hero */}
       <section className="relative overflow-hidden pb-16 pt-28 sm:pb-24 sm:pt-36">
+        {photo && (
+          // the module's store photo, blurred and dimmed across the whole hero for a retail feel
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <Image src={photo} alt="" fill sizes="100vw" className="scale-105 object-cover opacity-20 blur-sm" />
+            <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/85 to-ink-900/60" />
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b from-transparent to-ink-900" />
+          </div>
+        )}
         {/* soft ambience: a faint grid that fades out fast, plus brand and warm-light glows */}
         <div className="pointer-events-none absolute inset-0 bg-grid bg-[size:56px_56px] opacity-40 [mask-image:radial-gradient(ellipse_60%_50%_at_30%_0%,black,transparent)]" />
         <div className="pointer-events-none absolute -left-40 -top-32 h-[32rem] w-[40rem] rounded-full bg-emerald-500/15 blur-[120px]" />
