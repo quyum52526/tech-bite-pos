@@ -24,10 +24,10 @@ export default function UseCases() {
   return (
     <section id="use-cases" className="relative py-24">
       <div className="container-x">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-5xl text-center">
           <span className="eyebrow">{u.eyebrow}</span>
-          <h2 className="section-title mt-4">{u.title}</h2>
-          <p className="mt-4 text-slate-400">{u.subtitle}</p>
+          <h2 className="section-title section-title-line mt-4">{u.title}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">{u.subtitle}</p>
         </div>
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

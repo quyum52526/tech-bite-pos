@@ -47,7 +47,7 @@ export default function FeaturePage({ slug }: { slug: ModuleSlug }) {
             <span className="eyebrow">
               <mod.icon className="h-3.5 w-3.5" /> {copy.label}
             </span>
-            <h1 className="mt-5 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl">
+            <h1 className="mt-5 text-balance text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl">
               {copy.title}
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">{copy.subtitle}</p>
@@ -82,9 +82,9 @@ export default function FeaturePage({ slug }: { slug: ModuleSlug }) {
       {/* Other modules */}
       <section className="py-20">
         <div className="container-x">
-          <div className="max-w-2xl">
-            <h2 className="section-title">{t.showcase.otherModules}</h2>
-            <p className="mt-3 text-slate-400">{t.showcase.otherModulesSubtitle}</p>
+          <div className="max-w-5xl">
+            <h2 className="section-title section-title-line">{t.showcase.otherModules}</h2>
+            <p className="mt-3 max-w-2xl text-slate-400">{t.showcase.otherModulesSubtitle}</p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {others.map((m) => (

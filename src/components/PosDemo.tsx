@@ -103,12 +103,12 @@ export default function PosDemo() {
     <section id="demo" className="relative py-24">
       <div className="pointer-events-none absolute inset-x-0 top-1/3 mx-auto h-96 max-w-4xl rounded-full bg-brand-500/10 blur-3xl" />
       <div className="container-x relative">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-5xl text-center">
           <span className="eyebrow">
             <MousePointerClick className="h-3.5 w-3.5" /> {d.eyebrow}
           </span>
-          <h2 className="section-title mt-4">{d.title}</h2>
-          <p className="mt-4 text-slate-400">{d.subtitle}</p>
+          <h2 className="section-title section-title-line mt-4">{d.title}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">{d.subtitle}</p>
         </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_22rem_20rem]">

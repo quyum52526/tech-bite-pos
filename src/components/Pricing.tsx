@@ -14,10 +14,10 @@ export default function Pricing() {
   return (
     <section id="pricing" className="relative py-24">
       <div className="container-x">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-5xl text-center">
           <span className="eyebrow">{pr.eyebrow}</span>
-          <h2 className="section-title mt-4">{pr.title}</h2>
-          <p className="mt-4 text-slate-400">{pr.subtitle}</p>
+          <h2 className="section-title section-title-line mt-4">{pr.title}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">{pr.subtitle}</p>
 
           <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] p-1 text-sm">
             {[

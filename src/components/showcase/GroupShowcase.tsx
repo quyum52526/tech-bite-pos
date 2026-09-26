@@ -58,7 +58,7 @@ export default function GroupShowcase({ mod, group, index }: Props) {
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">
             {num(index + 1).padStart(2, num(0))} · {fill(t.showcase.capabilities, { n: num(group.items.length) })}
           </p>
-          <h2 id={`${group.id}-title`} className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          <h2 id={`${group.id}-title`} className="mt-2 text-balance text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {t.features.groups[group.id]}
           </h2>
         </div>

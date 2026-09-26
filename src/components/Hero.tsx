@@ -24,7 +24,7 @@ export default function Hero() {
           className="mx-auto max-w-4xl text-center"
         >
           <span className="eyebrow">{t.hero.eyebrow}</span>
-          <h1 className="mt-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl">
             {t.hero.titleBefore}{" "}
             <span className="bg-gradient-to-r from-brand-300 via-brand-400 to-emerald-200 bg-clip-text text-transparent">
               {t.hero.titleHighlight}
