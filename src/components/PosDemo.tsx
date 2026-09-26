@@ -1,96 +1,102 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  ArrowUpRight,
   BookOpenCheck,
   CheckCircle2,
+  CreditCard,
   Minus,
   MousePointerClick,
   Plus,
   Printer,
   RotateCcw,
   ShoppingCart,
+  ScanBarcode,
   Smartphone,
-  Split,
   Trash2,
   Wallet,
+  X,
 } from "lucide-react";
 import { fill, useI18n } from "@/lib/i18n";
-import type { Dictionary } from "@/lib/i18n/en";
+import ProductArt, { productTint, type ProductArtId } from "./ProductArt";
 
-type ProductId = keyof Dictionary["products"];
-type Product = { id: ProductId; price: number; emoji: string };
+export const LIVE_POS_URL = "https://bitepos-rho.vercel.app/pos";
+
+type ProductId = ProductArtId;
+/** Demo catalogue: the live POS's store items. Stock figures are demo values. */
+type Product = { id: ProductId; price: number; stock: number };
 
 const catalog: Product[] = [
-  { id: "rice", price: 420, emoji: "🍚" },
-  { id: "oil", price: 360, emoji: "🛢️" },
-  { id: "milk", price: 110, emoji: "🥛" },
-  { id: "tea", price: 185, emoji: "🍵" },
-  { id: "water", price: 30, emoji: "💧" },
-  { id: "soap", price: 75, emoji: "🧼" },
-  { id: "lentil", price: 140, emoji: "🫘" },
-  { id: "biscuit", price: 60, emoji: "🍪" },
+  { id: "ace", price: 1.2, stock: 118 },
+  { id: "cef3", price: 25, stock: 99 },
+  { id: "cerelac", price: 480, stock: 24 },
+  { id: "dove", price: 520, stock: 36 },
+  { id: "rice", price: 420, stock: 42 },
+  { id: "oil", price: 360, stock: 58 },
 ];
 
-type PayMode = "cash" | "bkash" | "split";
+type PayMode = "cash" | "bkash" | "card";
 
 type Receipt = {
   invoice: string;
-  trxId: string | null;
+  ref: string | null;
+  mode: PayMode;
   time: Date;
   lines: { id: ProductId; qty: number; price: number }[];
   total: number;
-  cash: number;
-  bkash: number;
 };
 
-function randomTrxId() {
+function randomRef(mode: PayMode) {
+  if (mode === "card") return `**** ${Math.floor(1000 + Math.random() * 9000)}`;
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
   return Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
 }
 
 export default function PosDemo() {
-  const { t, lang, taka: fmt, num } = useI18n();
+  const { t, lang, num } = useI18n();
   const d = t.demo;
-  const [cart, setCart] = useState<Record<string, number>>({ rice: 1, oil: 1 });
-  const [mode, setMode] = useState<PayMode>("split");
-  const [cashInput, setCashInput] = useState("400");
+  // Two decimals, like the till: ৳1.20, ৳480.00.
+  const fmt = useMemo(() => {
+    const f = new Intl.NumberFormat(lang === "bn" ? "bn-BD" : "en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (n: number) => `৳${f.format(n)}`;
+  }, [lang]);
+  const [cart, setCart] = useState<Partial<Record<ProductId, number>>>({ rice: 1, cerelac: 1 });
+  const [mode, setMode] = useState<PayMode>("cash");
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [modal, setModal] = useState(false);
+  const checkoutRef = useRef<HTMLButtonElement>(null);
+  const ctaRef = useRef<HTMLAnchorElement>(null);
 
   const lines = useMemo(
-    () =>
-      catalog
-        .filter((p) => cart[p.id])
-        .map((p) => ({ id: p.id, qty: cart[p.id], price: p.price })),
+    () => catalog.filter((p) => cart[p.id]).map((p) => ({ id: p.id, qty: cart[p.id] ?? 0, price: p.price })),
     [cart]
   );
-  const total = lines.reduce((s, l) => s + l.qty * l.price, 0);
+  // Sum in paisa so ৳1.20 × n never drifts.
+  const total = lines.reduce((s, l) => s + Math.round(l.price * 100) * l.qty, 0) / 100;
+  const itemCount = lines.reduce((s, l) => s + l.qty, 0);
 
-  const cashValue = Math.max(0, Math.floor(Number(cashInput) || 0));
-  const cash = mode === "cash" ? total : mode === "bkash" ? 0 : Math.min(cashValue, total);
-  const bkash = total - cash;
-  const splitInvalid = mode === "split" && (cashValue <= 0 || cashValue >= total);
-
-  const change = (id: string, delta: number) => {
+  const change = (p: Product, delta: number) => {
     setReceipt(null);
     setCart((c) => {
-      const next = { ...c, [id]: (c[id] ?? 0) + delta };
-      if (next[id] <= 0) delete next[id];
+      const qty = Math.min((c[p.id] ?? 0) + delta, p.stock);
+      const next = { ...c, [p.id]: qty };
+      if (qty <= 0) delete next[p.id];
       return next;
     });
   };
 
-  const checkout = () => {
-    if (!total || splitInvalid) return;
+  const printDemoReceipt = () => {
+    setModal(false);
+    if (!total) return;
     setReceipt({
       invoice: `INV-${Math.floor(10000 + Math.random() * 89999)}`,
-      trxId: bkash > 0 ? randomTrxId() : null,
+      ref: mode === "cash" ? null : randomRef(mode),
+      mode,
       time: new Date(),
       lines,
       total,
-      cash,
-      bkash,
     });
   };
 
@@ -98,6 +104,25 @@ export default function PosDemo() {
     setCart({});
     setReceipt(null);
   };
+
+  // Focus moves into the modal; Escape closes it and focus returns to the checkout button.
+  useEffect(() => {
+    if (!modal) return;
+    const trigger = checkoutRef.current;
+    ctaRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setModal(false);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      trigger?.focus();
+    };
+  }, [modal]);
+
+  const payModes = [
+    { id: "cash", label: t.payment.cash, icon: Wallet },
+    { id: "bkash", label: t.payment.bkash, icon: Smartphone },
+    { id: "card", label: t.payment.card, icon: CreditCard },
+  ] as const;
 
   return (
     <section id="demo" className="relative py-24">
@@ -111,30 +136,70 @@ export default function PosDemo() {
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">{d.subtitle}</p>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_22rem_20rem]">
+        {/* terminal top bar */}
+        <div className="mt-12 flex flex-col gap-3 rounded-2xl border border-white/10 bg-ink-800/80 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex gap-1.5" aria-hidden>
+              <span className="h-2.5 w-2.5 rounded-full bg-rose-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-400/70" />
+            </div>
+            <ScanBarcode className="h-4 w-4 shrink-0 text-brand-300" />
+            <p className="truncate text-sm font-medium text-slate-300">{d.terminal}</p>
+          </div>
+          <a
+            href={LIVE_POS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-emerald-400/50 bg-emerald-500/15 px-4 py-2 text-sm font-semibold text-emerald-200 shadow-lg shadow-emerald-500/10 transition hover:bg-emerald-500/25 hover:text-white"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
+            {d.launch} <ArrowUpRight className="h-4 w-4" />
+          </a>
+        </div>
+
+        <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_22rem_20rem]">
           {/* Catalog */}
           <div className="rounded-2xl border border-white/10 bg-ink-800/60 p-5">
             <p className="text-sm font-semibold text-white">{d.step1}</p>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              {catalog.map((p) => (
-                <motion.button
-                  key={p.id}
-                  whileTap={{ scale: 0.94 }}
-                  onClick={() => change(p.id, 1)}
-                  className="relative rounded-xl border border-white/5 bg-ink-900/60 p-3 text-left transition hover:border-brand-400/40 hover:bg-ink-900"
-                >
-                  {cart[p.id] ? (
-                    <span className="absolute right-2 top-2 grid h-5 min-w-5 place-items-center rounded-full bg-brand-500 px-1 text-[11px] font-bold text-white">
-                      {num(cart[p.id])}
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+              {catalog.map((p) => {
+                const inCart = cart[p.id] ?? 0;
+                const left = p.stock - inCart;
+                return (
+                  <motion.button
+                    key={p.id}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => change(p, 1)}
+                    disabled={left <= 0}
+                    aria-label={`${d.addOne}: ${t.products[p.id]}`}
+                    className="group relative flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900/60 text-left transition hover:border-brand-400/40 hover:bg-ink-900 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <span className={`relative grid aspect-[4/3] place-items-center bg-gradient-to-br ${productTint[p.id]}`}>
+                      <ProductArt id={p.id} className="h-[72%] w-[72%] drop-shadow-lg transition group-hover:scale-105" />
+                      <span
+                        className={`absolute left-1.5 top-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ring-1 backdrop-blur ${
+                          left > 0 ? "bg-slate-950/70 text-emerald-300 ring-emerald-400/30" : "bg-rose-950/80 text-rose-300 ring-rose-400/30"
+                        }`}
+                      >
+                        {left > 0 ? fill(d.inStock, { n: num(left) }) : d.outOfStock}
+                      </span>
+                      {inCart > 0 && (
+                        <span className="absolute right-1.5 top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-500 px-1 text-[11px] font-bold text-white">
+                          {num(inCart)}
+                        </span>
+                      )}
                     </span>
-                  ) : null}
-                  <span className="text-2xl" aria-hidden>
-                    {p.emoji}
-                  </span>
-                  <span className="mt-2 block text-xs font-medium leading-snug text-slate-200">{t.products[p.id]}</span>
-                  <span className="mt-1 block text-sm font-semibold text-brand-300">{fmt(p.price)}</span>
-                </motion.button>
-              ))}
+                    <span className="flex flex-1 flex-col p-2.5">
+                      <span className="block text-xs font-medium leading-snug text-slate-200">{t.products[p.id]}</span>
+                      <span className="mt-auto block pt-1 text-sm font-semibold text-brand-300">{fmt(p.price)}</span>
+                    </span>
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
 
@@ -171,13 +236,20 @@ export default function PosDemo() {
                     exit={{ opacity: 0, x: 10 }}
                     className="flex items-center justify-between gap-2 rounded-lg bg-white/[0.03] p-2"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-xs font-medium text-slate-200">{t.products[l.id]}</p>
-                      <p className="text-[11px] text-slate-500">{fmt(l.qty * l.price)}</p>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-md bg-gradient-to-br ${productTint[l.id]}`}>
+                        <ProductArt id={l.id} className="h-6 w-6" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-medium text-slate-200">{t.products[l.id]}</p>
+                        <p className="text-[11px] text-slate-500">
+                          {num(l.qty)} × {fmt(l.price)} = {fmt((Math.round(l.price * 100) * l.qty) / 100)}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <button
-                        onClick={() => change(l.id, -1)}
+                        onClick={() => change(catalog.find((p) => p.id === l.id)!, -1)}
                         aria-label={`${d.removeOne}: ${t.products[l.id]}`}
                         className="grid h-6 w-6 place-items-center rounded bg-white/5 text-slate-300 hover:bg-white/10"
                       >
@@ -185,7 +257,7 @@ export default function PosDemo() {
                       </button>
                       <span className="w-5 text-center text-xs font-semibold text-white">{num(l.qty)}</span>
                       <button
-                        onClick={() => change(l.id, 1)}
+                        onClick={() => change(catalog.find((p) => p.id === l.id)!, 1)}
                         aria-label={`${d.addOne}: ${t.products[l.id]}`}
                         className="grid h-6 w-6 place-items-center rounded bg-white/5 text-slate-300 hover:bg-white/10"
                       >
@@ -204,19 +276,14 @@ export default function PosDemo() {
 
             <p className="mt-5 text-sm font-semibold text-white">{d.step3}</p>
             <div className="mt-2 grid grid-cols-3 gap-2">
-              {(
-                [
-                  { id: "cash", label: t.payment.cash, icon: Wallet },
-                  { id: "bkash", label: t.payment.bkash, icon: Smartphone },
-                  { id: "split", label: t.payment.split, icon: Split },
-                ] as const
-              ).map((m) => (
+              {payModes.map((m) => (
                 <button
                   key={m.id}
                   onClick={() => {
                     setMode(m.id);
                     setReceipt(null);
                   }}
+                  aria-pressed={mode === m.id}
                   className={`flex flex-col items-center gap-1 rounded-lg border py-2 text-xs transition ${
                     mode === m.id
                       ? "border-brand-400/60 bg-brand-500/15 text-white"
@@ -228,49 +295,11 @@ export default function PosDemo() {
               ))}
             </div>
 
-            <AnimatePresence initial={false}>
-              {mode === "split" && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-3 space-y-2 rounded-xl bg-ink-900/60 p-3">
-                    <label className="flex items-center justify-between gap-3 text-xs text-slate-300">
-                      <span className="flex items-center gap-1.5">
-                        <Wallet className="h-3.5 w-3.5 text-emerald-300" /> {t.payment.cash}
-                      </span>
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        value={cashInput}
-                        onChange={(e) => {
-                          setCashInput(e.target.value);
-                          setReceipt(null);
-                        }}
-                        className="w-28 rounded-md border border-white/10 bg-ink-800 px-2 py-1 text-right text-sm text-white outline-none focus:border-brand-400"
-                      />
-                    </label>
-                    <div className="flex items-center justify-between text-xs text-slate-300">
-                      <span className="flex items-center gap-1.5">
-                        <Smartphone className="h-3.5 w-3.5 text-pink-300" /> {d.bkashAuto}
-                      </span>
-                      <span className="w-28 text-right text-sm font-semibold text-pink-200">{fmt(bkash)}</span>
-                    </div>
-                    {splitInvalid && total > 0 && (
-                      <p className="text-[11px] text-amber-300">{fill(d.splitError, { min: fmt(1), max: fmt(total - 1) })}</p>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             <button
-              onClick={checkout}
-              disabled={!total || splitInvalid}
-              className="btn-primary mt-4 w-full disabled:cursor-not-allowed disabled:opacity-40"
+              ref={checkoutRef}
+              onClick={() => setModal(true)}
+              disabled={!total}
+              className="mt-4 w-full rounded-xl bg-emerald-500 px-4 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {d.complete} · {fmt(total)}
             </button>
@@ -310,7 +339,7 @@ export default function PosDemo() {
                         <span className="truncate">
                           {num(l.qty)} × {t.products[l.id]}
                         </span>
-                        <span>{num(l.qty * l.price)}</span>
+                        <span>{fmt((Math.round(l.price * 100) * l.qty) / 100)}</span>
                       </div>
                     ))}
                     <div className="my-2 border-t border-dashed border-slate-400" />
@@ -318,20 +347,14 @@ export default function PosDemo() {
                       <span>{d.receipt.total}</span>
                       <span>{fmt(receipt.total)}</span>
                     </div>
-                    {receipt.cash > 0 && (
-                      <div className="flex justify-between">
-                        <span>{t.payment.cash}</span>
-                        <span>{num(receipt.cash)}</span>
-                      </div>
-                    )}
-                    {receipt.bkash > 0 && (
-                      <>
-                        <div className="flex justify-between">
-                          <span>{t.payment.bkash}</span>
-                          <span>{num(receipt.bkash)}</span>
-                        </div>
-                        <p className="text-slate-500">{d.receipt.trxId}: {receipt.trxId}</p>
-                      </>
+                    <div className="flex justify-between">
+                      <span>{t.payment[receipt.mode]}</span>
+                      <span>{fmt(receipt.total)}</span>
+                    </div>
+                    {receipt.ref && (
+                      <p className="text-slate-500">
+                        {receipt.mode === "bkash" ? d.receipt.trxId : d.receipt.cardRef}: {receipt.ref}
+                      </p>
                     )}
                     <div className="my-2 border-t border-dashed border-slate-400" />
                     <p className="text-center">{d.receipt.thanks}</p>
@@ -345,21 +368,13 @@ export default function PosDemo() {
                       <BookOpenCheck className="h-3.5 w-3.5" /> {d.journal.title}
                     </p>
                     <div className="mt-2 space-y-0.5 font-mono text-[11px] text-slate-300">
-                      {receipt.cash > 0 && (
-                        <div className="flex justify-between">
-                          <span>{d.journal.drCash}</span>
-                          <span>{num(receipt.cash)}</span>
-                        </div>
-                      )}
-                      {receipt.bkash > 0 && (
-                        <div className="flex justify-between">
-                          <span>{d.journal.drBkash}</span>
-                          <span>{num(receipt.bkash)}</span>
-                        </div>
-                      )}
+                      <div className="flex justify-between">
+                        <span>{receipt.mode === "cash" ? d.journal.drCash : receipt.mode === "bkash" ? d.journal.drBkash : d.journal.drCard}</span>
+                        <span>{fmt(receipt.total)}</span>
+                      </div>
                       <div className="flex justify-between text-slate-500">
                         <span className="pl-3">{d.journal.crSales}</span>
-                        <span>{num(receipt.total)}</span>
+                        <span>{fmt(receipt.total)}</span>
                       </div>
                     </div>
                     <p className="mt-2 flex items-center gap-1 text-[11px] text-slate-400">
@@ -386,6 +401,70 @@ export default function PosDemo() {
           </div>
         </div>
       </div>
+
+      {/* checkout → live POS */}
+      <AnimatePresence>
+        {modal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] grid place-items-center bg-slate-950/75 p-4 backdrop-blur-sm"
+            onClick={() => setModal(false)}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="live-pos-title"
+              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl shadow-black/60"
+            >
+              <button
+                onClick={() => setModal(false)}
+                aria-label={d.modal.close}
+                className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/30">
+                <ScanBarcode className="h-6 w-6" />
+              </span>
+              <h3 id="live-pos-title" className="mt-4 text-lg font-bold text-white">
+                {d.modal.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">{d.modal.body}</p>
+
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3.5 py-2.5 text-sm">
+                <span className="text-slate-400">
+                  {fill(d.modal.items, { n: num(itemCount) })} · {t.payment[mode]}
+                </span>
+                <span className="font-bold text-white">{fmt(total)}</span>
+              </div>
+
+              <a
+                href={LIVE_POS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                ref={ctaRef}
+                onClick={() => setModal(false)}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400"
+              >
+                {d.modal.cta} <ArrowUpRight className="h-4 w-4 shrink-0" />
+              </a>
+              <button
+                onClick={printDemoReceipt}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-white"
+              >
+                <Printer className="h-4 w-4" /> {d.modal.local}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
